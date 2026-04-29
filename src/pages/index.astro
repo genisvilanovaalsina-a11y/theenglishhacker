@@ -1,0 +1,29 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/home/Hero.astro';
+import LevelGrid from '../components/home/LevelGrid.astro';
+import WhySection from '../components/home/WhySection.astro';
+import Footer from '../components/layout/Footer.astro';
+---
+
+<BaseLayout
+  title="The English Hacker — Practice Cambridge Like a Hacker"
+  description="Practice B2 First and C1 Advanced Cambridge exams in real format. Free demo. No signup. Track your progress. Pass your exam."
+>
+  <header class="border-b border-hacker-border px-6 py-4 flex justify-between items-center">
+    <a href="/" class="text-hacker-green font-bold text-sm">&gt;_ TheEnglishHacker</a>
+    <nav class="flex gap-6 text-xs text-hacker-dim">
+      <a href="/b2" class="hover:text-hacker-green transition-colors">B2 Demo</a>
+      <a href="/c1" class="hover:text-hacker-green transition-colors">C1 Demo</a>
+      <a href="/unlock" class="text-hacker-green hover:text-hacker-green-dim transition-colors font-bold">Unlock</a>
+    </nav>
+  </header>
+
+  <main>
+    <Hero />
+    <LevelGrid />
+    <WhySection />
+  </main>
+
+  <Footer />
+</BaseLayout>

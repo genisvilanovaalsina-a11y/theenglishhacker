@@ -1,0 +1,81 @@
+---
+const levels = [
+  {
+    code: 'A2',
+    name: 'KEY',
+    status: 'waitlist',
+    href: '/a2',
+    desc: 'Cambridge A2 Key',
+  },
+  {
+    code: 'B1',
+    name: 'PRELIMINARY',
+    status: 'waitlist',
+    href: '/b1',
+    desc: 'Cambridge B1 Preliminary',
+  },
+  {
+    code: 'B2',
+    name: 'FIRST',
+    status: 'active',
+    href: '/b2',
+    desc: 'Cambridge B2 First (FCE)',
+  },
+  {
+    code: 'C1',
+    name: 'ADVANCED',
+    status: 'active',
+    href: '/c1',
+    desc: 'Cambridge C1 Advanced (CAE)',
+  },
+  {
+    code: 'C2',
+    name: 'PROFICIENCY',
+    status: 'waitlist',
+    href: '/c2',
+    desc: 'Cambridge C2 Proficiency (CPE)',
+  },
+];
+---
+
+<section class="px-6 py-16 max-w-5xl mx-auto">
+  <div class="text-xs text-hacker-dim mb-8">
+    <span class="text-hacker-green">// AVAILABLE_LEVELS</span>
+    <span class="ml-4">Select your target exam below</span>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+    {levels.map((level) => (
+      <a
+        href={level.href}
+        class={`block border p-5 transition-all group ${
+          level.status === 'active'
+            ? 'border-hacker-border hover:border-hacker-green hover:hacker-glow cursor-pointer'
+            : 'border-hacker-border opacity-60 cursor-pointer'
+        }`}
+      >
+        <div class="flex justify-between items-start mb-4">
+          <span class={`text-2xl font-bold ${level.status === 'active' ? 'text-hacker-green' : 'text-hacker-dim'}`}>
+            {level.code}
+          </span>
+          <span class={`text-xs px-2 py-1 border ${
+            level.status === 'active'
+              ? 'border-hacker-green text-hacker-green'
+              : 'border-hacker-muted text-hacker-dim'
+          }`}>
+            {level.status === 'active' ? 'ACTIVE' : 'WAITLIST'}
+          </span>
+        </div>
+        <p class="text-xs font-bold text-hacker-text mb-1">{level.name}</p>
+        <p class="text-xs text-hacker-dim">{level.desc}</p>
+        <div class={`mt-4 text-xs font-bold ${
+          level.status === 'active'
+            ? 'text-hacker-green group-hover:text-hacker-green-dim'
+            : 'text-hacker-dim'
+        }`}>
+          {level.status === 'active' ? '&gt;_ START FREE DEMO →' : '[ JOIN WAITLIST → ]'}
+        </div>
+      </a>
+    ))}
+  </div>
+</section>

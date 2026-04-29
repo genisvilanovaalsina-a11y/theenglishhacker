@@ -1,0 +1,43 @@
+---
+const faqs = [
+  {
+    q: 'Is this affiliated with Cambridge Assessment English?',
+    a: 'No. The English Hacker is an independent practice platform. We use the same format as Cambridge exams for practice purposes, but we are not affiliated with or endorsed by Cambridge Assessment English.',
+  },
+  {
+    q: 'Is there a refund policy?',
+    a: 'Yes — 14-day money-back guarantee, no questions asked. If you don\'t find the content useful, email us and we\'ll refund you in full.',
+  },
+  {
+    q: 'Do I need to create an account?',
+    a: 'No. Your progress is saved directly in your browser. No login, no account, no data collection beyond what you choose to share.',
+  },
+  {
+    q: 'What exactly is a "cloze test"?',
+    a: 'A cloze test (also called Use of English Part 1) is a Cambridge exam task where you read a text with 8 gaps and choose the correct word for each gap from four options (A/B/C/D). It tests vocabulary and collocations.',
+  },
+  {
+    q: 'Is the content updated regularly?',
+    a: 'Yes. We add new exercises regularly. Once you unlock a level, you get access to all future exercises for that level at no extra cost.',
+  },
+  {
+    q: 'Can I pay for just one level?',
+    a: 'Yes. B2 and C1 are sold separately. B2 First is 7€, C1 Advanced is 9€. Pay only for what you need.',
+  },
+];
+---
+
+<section class="space-y-4">
+  <div class="text-xs text-hacker-dim mb-6">// FAQ</div>
+  {faqs.map((faq, i) => (
+    <details class="border border-hacker-border group">
+      <summary class="px-4 py-4 text-sm cursor-pointer list-none flex justify-between items-center hover:text-hacker-green transition-colors">
+        <span>{faq.q}</span>
+        <span class="text-hacker-green text-lg leading-none group-open:rotate-45 transition-transform">+</span>
+      </summary>
+      <p class="px-4 pb-4 text-xs text-hacker-dim leading-relaxed border-t border-hacker-border pt-3">
+        {faq.a}
+      </p>
+    </details>
+  ))}
+</section>

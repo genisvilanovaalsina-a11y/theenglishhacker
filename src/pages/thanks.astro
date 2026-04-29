@@ -1,0 +1,81 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Footer from '../components/layout/Footer.astro';
+---
+
+<BaseLayout
+  title="Access Granted | The English Hacker"
+  description="Thank you for your purchase. Your full access is now active."
+  noIndex={true}
+>
+  <main class="min-h-screen flex flex-col items-center justify-center px-6 py-20 text-center space-y-10">
+
+    <div class="space-y-4 animate-fadein">
+      <div class="text-xs text-hacker-dim">// PAYMENT_CONFIRMED</div>
+      <h1 class="text-4xl font-bold text-hacker-green">[ ACCESS_GRANTED ]</h1>
+      <p class="text-sm text-hacker-dim max-w-md mx-auto leading-relaxed">
+        Payment received. Your full access is now active in this browser.
+        No account needed — your access is tied to this device.
+      </p>
+    </div>
+
+    <div class="border border-hacker-green p-6 max-w-md w-full space-y-4 text-left hacker-glow animate-fadein" style="animation-delay: 0.2s">
+      <div class="text-xs text-hacker-dim">// NEXT_STEPS</div>
+      <ol class="text-sm space-y-3 text-hacker-text">
+        <li class="flex gap-3">
+          <span class="text-hacker-green font-bold shrink-0">01.</span>
+          <span>Click the link below to go to your level and start practicing immediately.</span>
+        </li>
+        <li class="flex gap-3">
+          <span class="text-hacker-green font-bold shrink-0">02.</span>
+          <span>Your progress is saved automatically in this browser — no account required.</span>
+        </li>
+        <li class="flex gap-3">
+          <span class="text-hacker-green font-bold shrink-0">03.</span>
+          <span>New exercises are added regularly. Come back often.</span>
+        </li>
+      </ol>
+    </div>
+
+    <div class="flex flex-wrap justify-center gap-4 animate-fadein" style="animation-delay: 0.4s">
+      <a
+        href="/b2"
+        class="bg-hacker-green text-hacker-bg px-8 py-3 font-bold text-sm hover:bg-hacker-green-dim transition-colors"
+        id="btn-b2"
+      >
+        &gt;_ GO TO B2 EXERCISES
+      </a>
+      <a
+        href="/c1"
+        class="border border-hacker-green text-hacker-green px-8 py-3 font-bold text-sm hover:bg-hacker-green hover:text-hacker-bg transition-colors"
+        id="btn-c1"
+      >
+        &gt;_ GO TO C1 EXERCISES
+      </a>
+    </div>
+
+    <p class="text-xs text-hacker-dim animate-fadein" style="animation-delay: 0.5s">
+      Questions? <a href="mailto:hello@theenglishhacker.com" class="text-hacker-green hover:underline">hello@theenglishhacker.com</a>
+    </p>
+
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<script>
+  // Set localStorage access tokens so the ExercisePlayer unlocks
+  // In a real system, verify via Stripe webhook. For MVP, set on /thanks visit.
+  // The URL param ?level=b2 or ?level=c1 can be passed from Stripe success URL.
+  const params = new URLSearchParams(window.location.search);
+  const level = params.get('level');
+  if (level === 'b2') {
+    localStorage.setItem('teh_unlocked_b2', 'true');
+  } else if (level === 'c1') {
+    localStorage.setItem('teh_unlocked_c1', 'true');
+  } else {
+    // Fallback: both (if Stripe doesn't pass level param)
+    localStorage.setItem('teh_unlocked_b2', 'true');
+    localStorage.setItem('teh_unlocked_c1', 'true');
+  }
+</script>

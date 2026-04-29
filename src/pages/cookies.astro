@@ -1,0 +1,52 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Footer from '../components/layout/Footer.astro';
+---
+
+<BaseLayout
+  title="Cookie Policy | The English Hacker"
+  description="Cookie policy for TheEnglishHacker.com — we don't use tracking cookies."
+>
+  <header class="border-b border-hacker-border px-6 py-4">
+    <a href="/" class="text-hacker-green font-bold text-sm">&gt;_ TheEnglishHacker</a>
+  </header>
+
+  <main class="max-w-2xl mx-auto px-6 py-16 space-y-8 text-sm leading-relaxed text-hacker-dim">
+    <div>
+      <div class="text-xs text-hacker-dim mb-2">// LEGAL</div>
+      <h1 class="text-2xl font-bold text-hacker-text">Cookie Policy</h1>
+      <p class="text-xs mt-2">Last updated: {new Date().toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+    </div>
+
+    <section class="space-y-3">
+      <h2 class="text-hacker-text font-bold">The short version</h2>
+      <p class="text-hacker-green border border-hacker-green p-3 text-xs">
+        [ STATUS: CLEAN ] — This site does not use advertising cookies, tracking cookies, or analytics cookies.
+        No cookie consent banner required.
+      </p>
+    </section>
+
+    <section class="space-y-3">
+      <h2 class="text-hacker-text font-bold">What we use instead: localStorage</h2>
+      <p>We use your browser's <strong class="text-hacker-text">localStorage</strong> (not cookies) to save your exercise progress and access tokens. This is a technical mechanism built into every browser. The data stored this way:</p>
+      <ul class="list-none space-y-2 pl-0">
+        <li class="flex gap-2"><span class="text-hacker-green">→</span> Never leaves your device</li>
+        <li class="flex gap-2"><span class="text-hacker-green">→</span> Is not accessible to us or any third party</li>
+        <li class="flex gap-2"><span class="text-hacker-green">→</span> Can be deleted at any time from your browser settings</li>
+        <li class="flex gap-2"><span class="text-hacker-green">→</span> Does not require consent under GDPR</li>
+      </ul>
+    </section>
+
+    <section class="space-y-3">
+      <h2 class="text-hacker-text font-bold">Third-party services</h2>
+      <p>Stripe (payment processor) and Formspree (email forms) may set their own cookies when you interact with their services. Please review their respective cookie policies for details.</p>
+    </section>
+
+    <section class="space-y-3">
+      <h2 class="text-hacker-text font-bold">How to clear your data</h2>
+      <p>In any browser: Settings → Privacy → Clear browsing data → Local storage. This will reset your progress and access tokens.</p>
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>

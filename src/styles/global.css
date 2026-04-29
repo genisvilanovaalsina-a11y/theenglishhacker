@@ -1,0 +1,90 @@
+@import "tailwindcss";
+@import "@fontsource/jetbrains-mono/400.css";
+@import "@fontsource/jetbrains-mono/700.css";
+
+@theme {
+  --color-hacker-bg: #0a0a0a;
+  --color-hacker-surface: #111111;
+  --color-hacker-border: #1a1a1a;
+  --color-hacker-muted: #3a3a3a;
+  --color-hacker-text: #e5e5e5;
+  --color-hacker-dim: #888888;
+  --color-hacker-green: #00ff88;
+  --color-hacker-green-dim: #00cc66;
+  --color-hacker-amber: #f59e0b;
+  --color-hacker-red: #ef4444;
+
+  --font-mono: "JetBrains Mono", "Fira Code", ui-monospace, monospace;
+
+  --animate-blink: blink 1s step-end infinite;
+  --animate-glitch: glitch 0.25s linear;
+  --animate-fadein: fadein 0.4s ease-out forwards;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+@keyframes glitch {
+  0%   { transform: translate(0); }
+  20%  { transform: translate(-2px, 2px); }
+  40%  { transform: translate(-2px, -2px); }
+  60%  { transform: translate(2px, 2px); }
+  80%  { transform: translate(2px, -2px); }
+  100% { transform: translate(0); }
+}
+
+@keyframes fadein {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@layer base {
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    background-color: #0a0a0a;
+    color: #e5e5e5;
+    font-family: "JetBrains Mono", "Fira Code", ui-monospace, monospace;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    scroll-behavior: smooth;
+  }
+
+  ::selection {
+    background-color: #00ff88;
+    color: #0a0a0a;
+  }
+
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: #111; }
+  ::-webkit-scrollbar-thumb { background: #00ff88; border-radius: 2px; }
+
+  a { color: inherit; text-decoration: none; }
+}
+
+@layer utilities {
+  .hacker-glow {
+    box-shadow: 0 0 24px rgba(0, 255, 136, 0.12);
+  }
+  .hacker-glow-strong {
+    box-shadow: 0 0 40px rgba(0, 255, 136, 0.25);
+  }
+  .cursor-blink::after {
+    content: "_";
+    animation: blink 1s step-end infinite;
+    color: #00ff88;
+  }
+  .animate-fadein {
+    animation: fadein 0.4s ease-out forwards;
+  }
+  .animate-blink {
+    animation: blink 1s step-end infinite;
+  }
+  .animate-glitch {
+    animation: glitch 0.25s linear;
+  }
+}

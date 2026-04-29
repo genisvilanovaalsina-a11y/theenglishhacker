@@ -1,0 +1,67 @@
+---
+interface Props {
+  level: string;
+  formspreeId?: string;
+}
+
+const { level, formspreeId = import.meta.env.PUBLIC_FORMSPREE_ID ?? 'your_form_id' } = Astro.props;
+---
+
+<form
+  action={`https://formspree.io/f/${formspreeId}`}
+  method="POST"
+  class="space-y-4 max-w-md"
+  id="waitlist-form"
+>
+  <input type="hidden" name="level" value={level} />
+  <input type="hidden" name="_subject" value={`New waitlist signup — ${level}`} />
+
+  <div>
+    <label for="email" class="block text-xs text-hacker-dim mb-2">
+      &gt;_ YOUR EMAIL
+    </label>
+    <input
+      type="email"
+      id="email"
+      name="email"
+      required
+      placeholder="you@example.com"
+      class="w-full bg-hacker-surface border border-hacker-border px-4 py-3 text-sm text-hacker-text placeholder-hacker-muted focus:border-hacker-green focus:outline-none transition-colors"
+    />
+  </div>
+
+  <button
+    type="submit"
+    class="w-full bg-hacker-green text-hacker-bg px-6 py-3 font-bold text-sm hover:bg-hacker-green-dim transition-colors"
+  >
+    &gt;_ JOIN WAITLIST — GET 40% OFF
+  </button>
+
+  <p class="text-xs text-hacker-dim">
+    No spam. No bullshit. Just a notification when {level} is live — with your discount locked in.
+  </p>
+</form>
+
+<div id="waitlist-success" class="hidden text-hacker-green text-sm border border-hacker-green p-4">
+  [ ACCESS_REQUEST_LOGGED ] — We'll ping you when {level} goes live.
+</div>
+
+<script>
+  const form = document.getElementById('waitlist-form') as HTMLFormElement;
+  const success = document.getElementById('waitlist-success');
+  if (form && success) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const data = new FormData(form);
+      const res = await fetch(form.action, {
+        method: 'POST',
+        body: data,
+        headers: { Accept: 'application/json' },
+      });
+      if (res.ok) {
+        form.classList.add('hidden');
+        success.classList.remove('hidden');
+      }
+    });
+  }
+</script>

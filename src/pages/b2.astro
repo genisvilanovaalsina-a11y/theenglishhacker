@@ -1,0 +1,41 @@
+---
+import LevelLayout from '../layouts/LevelLayout.astro';
+import ExercisePlayer from '../components/exercise/ExercisePlayer';
+import { exercise } from '../data/exercises/b2/demo-cloze-01';
+
+const stripeUrl = import.meta.env.STRIPE_B2_URL ?? '#';
+---
+
+<LevelLayout
+  title="B2 First (FCE) — Cloze Test Demo | The English Hacker"
+  description="Practice the Cambridge B2 First Use of English cloze test in real format. 8 questions. Free demo."
+  level="B2_FIRST"
+  levelLabel="B2 First (FCE)"
+  exerciseType="CLOZE_TEST"
+>
+  <div class="px-6 pt-8 max-w-3xl mx-auto">
+    <div class="text-xs text-hacker-dim mb-2">// EXERCISE_01 — USE OF ENGLISH · PART 1</div>
+    <h1 class="text-xl font-bold text-hacker-text mb-1">{exercise.title}</h1>
+    <p class="text-xs text-hacker-dim">
+      Cambridge B2 First format · 8 questions · Choose A, B, C or D
+    </p>
+  </div>
+
+  <ExercisePlayer
+    client:load
+    exercise={exercise}
+    unlockUrl={stripeUrl}
+  />
+
+  <div class="max-w-3xl mx-auto px-6 pb-10">
+    <div class="border-t border-hacker-border pt-8 text-center space-y-4">
+      <p class="text-xs text-hacker-dim">Liked the demo? Unlock the full B2 pack.</p>
+      <a
+        href="/unlock"
+        class="inline-block border border-hacker-green text-hacker-green px-8 py-3 font-bold text-sm hover:bg-hacker-green hover:text-hacker-bg transition-colors"
+      >
+        &gt;_ SEE FULL PACK — 7€
+      </a>
+    </div>
+  </div>
+</LevelLayout>

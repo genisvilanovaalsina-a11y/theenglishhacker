@@ -1,0 +1,166 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import FAQ from '../components/sales/FAQ.astro';
+import Footer from '../components/layout/Footer.astro';
+
+const stripeB2 = import.meta.env.STRIPE_B2_URL ?? '#';
+const stripeC1 = import.meta.env.STRIPE_C1_URL ?? '#';
+
+const included = [
+  'Full cloze test bank (Use of English Part 1)',
+  'Detailed explanations for every answer',
+  'Keyboard navigation (power-user mode)',
+  'Progress tracking in your browser',
+  'All future exercises for this level, free',
+  'No subscription, no account required',
+];
+
+const comparison = [
+  { feature: 'Demo exercise', free: true, paid: true },
+  { feature: 'Answer explanations', free: true, paid: true },
+  { feature: 'Progress tracking', free: true, paid: true },
+  { feature: 'Full exercise bank', free: false, paid: true },
+  { feature: 'All future exercises', free: false, paid: true },
+  { feature: 'Keyboard navigation', free: false, paid: true },
+];
+---
+
+<BaseLayout
+  title="Unlock Full Access | The English Hacker"
+  description="Stop practicing for free. Start passing for real. Unlock the full B2 or C1 exercise pack. One-time payment, no subscription."
+>
+  <header class="border-b border-hacker-border px-6 py-4 flex justify-between items-center">
+    <a href="/" class="text-hacker-green font-bold text-sm">&gt;_ TheEnglishHacker</a>
+    <nav class="flex gap-6 text-xs text-hacker-dim">
+      <a href="/b2" class="hover:text-hacker-green transition-colors">B2 Demo</a>
+      <a href="/c1" class="hover:text-hacker-green transition-colors">C1 Demo</a>
+    </nav>
+  </header>
+
+  <main class="max-w-4xl mx-auto px-6 py-16 space-y-20">
+
+    {/* Hero */}
+    <section class="text-center space-y-6">
+      <div class="text-xs text-hacker-dim">[ UPGRADE: REQUIRED ]</div>
+      <h1 class="text-3xl sm:text-4xl font-bold leading-tight">
+        Stop practicing for free.<br />
+        <span class="text-hacker-green">Start passing for real.</span>
+      </h1>
+      <p class="text-sm text-hacker-dim max-w-xl mx-auto leading-relaxed">
+        The demo is fine. The full pack is what gets you the certificate.
+        One payment. No subscription. Yours forever.
+      </p>
+    </section>
+
+    {/* What's included */}
+    <section class="space-y-6">
+      <div class="text-xs text-hacker-dim">// WHAT_YOU_GET</div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {included.map((item) => (
+          <div class="flex items-start gap-3 text-sm">
+            <span class="text-hacker-green mt-0.5 shrink-0">✓</span>
+            <span class="text-hacker-text">{item}</span>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    {/* Comparison table */}
+    <section class="space-y-6">
+      <div class="text-xs text-hacker-dim">// FREE_VS_FULL</div>
+      <div class="border border-hacker-border overflow-hidden">
+        <div class="grid grid-cols-3 text-xs border-b border-hacker-border">
+          <div class="px-4 py-3 text-hacker-dim">Feature</div>
+          <div class="px-4 py-3 text-hacker-dim text-center border-l border-hacker-border">Free Demo</div>
+          <div class="px-4 py-3 text-hacker-green text-center border-l border-hacker-border font-bold">Full Pack</div>
+        </div>
+        {comparison.map((row) => (
+          <div class="grid grid-cols-3 text-xs border-b border-hacker-border last:border-b-0">
+            <div class="px-4 py-3 text-hacker-text">{row.feature}</div>
+            <div class="px-4 py-3 text-center border-l border-hacker-border">
+              {row.free ? <span class="text-hacker-green">✓</span> : <span class="text-hacker-muted">—</span>}
+            </div>
+            <div class="px-4 py-3 text-center border-l border-hacker-border">
+              {row.paid ? <span class="text-hacker-green font-bold">✓</span> : <span class="text-hacker-muted">—</span>}
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    {/* Pricing */}
+    <section class="space-y-6">
+      <div class="text-xs text-hacker-dim">// SELECT_YOUR_LEVEL</div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+
+        <div class="border border-hacker-border p-6 space-y-4 hover:border-hacker-green transition-colors">
+          <div class="flex justify-between items-start">
+            <div>
+              <p class="text-xs text-hacker-dim">B2 FIRST (FCE)</p>
+              <p class="text-3xl font-bold text-hacker-text mt-1">7€</p>
+            </div>
+            <span class="text-xs border border-hacker-border text-hacker-dim px-2 py-1">ONE-TIME</span>
+          </div>
+          <ul class="text-xs text-hacker-dim space-y-2">
+            <li class="flex gap-2"><span class="text-hacker-green">✓</span> Full Use of English bank</li>
+            <li class="flex gap-2"><span class="text-hacker-green">✓</span> All future B2 exercises</li>
+            <li class="flex gap-2"><span class="text-hacker-green">✓</span> 14-day money-back guarantee</li>
+          </ul>
+          <a
+            href={stripeB2}
+            class="block text-center bg-hacker-green text-hacker-bg px-6 py-3 font-bold text-sm hover:bg-hacker-green-dim transition-colors"
+          >
+            &gt;_ UNLOCK B2 — 7€
+          </a>
+        </div>
+
+        <div class="border border-hacker-green p-6 space-y-4 hacker-glow relative">
+          <div class="absolute -top-3 left-4 text-xs bg-hacker-green text-hacker-bg px-3 py-1 font-bold">MOST POPULAR</div>
+          <div class="flex justify-between items-start">
+            <div>
+              <p class="text-xs text-hacker-dim">C1 ADVANCED (CAE)</p>
+              <p class="text-3xl font-bold text-hacker-text mt-1">9€</p>
+            </div>
+            <span class="text-xs border border-hacker-green text-hacker-green px-2 py-1">ONE-TIME</span>
+          </div>
+          <ul class="text-xs text-hacker-dim space-y-2">
+            <li class="flex gap-2"><span class="text-hacker-green">✓</span> Full Use of English bank</li>
+            <li class="flex gap-2"><span class="text-hacker-green">✓</span> All future C1 exercises</li>
+            <li class="flex gap-2"><span class="text-hacker-green">✓</span> 14-day money-back guarantee</li>
+          </ul>
+          <a
+            href={stripeC1}
+            class="block text-center bg-hacker-green text-hacker-bg px-6 py-3 font-bold text-sm hover:bg-hacker-green-dim transition-colors"
+          >
+            &gt;_ UNLOCK C1 — 9€
+          </a>
+        </div>
+
+      </div>
+      <p class="text-xs text-hacker-dim text-center">
+        Secure payment via Stripe. 14-day money-back guarantee. No subscription, ever.
+      </p>
+    </section>
+
+    {/* FAQ */}
+    <FAQ />
+
+    {/* Final CTA */}
+    <section class="border border-hacker-green p-8 text-center space-y-6 hacker-glow">
+      <div class="text-xs text-hacker-dim">// LAST_CHANCE</div>
+      <h2 class="text-2xl font-bold">Ready to pass?</h2>
+      <p class="text-sm text-hacker-dim">Your exam date won't move. Your score will.</p>
+      <div class="flex flex-wrap justify-center gap-4">
+        <a href={stripeB2} class="bg-hacker-green text-hacker-bg px-8 py-3 font-bold text-sm hover:bg-hacker-green-dim transition-colors">
+          &gt;_ B2 — 7€
+        </a>
+        <a href={stripeC1} class="bg-hacker-green text-hacker-bg px-8 py-3 font-bold text-sm hover:bg-hacker-green-dim transition-colors">
+          &gt;_ C1 — 9€
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <Footer />
+</BaseLayout>
