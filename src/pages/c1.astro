@@ -4,17 +4,27 @@ import ExercisePlayer from '../components/exercise/ExercisePlayer';
 import { exercise } from '../data/exercises/c1/demo-cloze-01';
 
 const stripeUrl = import.meta.env.STRIPE_C1_URL ?? '/unlock';
+
+const exams = [
+  { id: 'exam-01', number: 1, title: 'The Psychology of Colour',   topic: 'Language · Society · Urban design' },
+  { id: 'exam-02', number: 2, title: 'The Concept of Biomimicry',  topic: 'Science · Psychology · Technology' },
+  { id: 'exam-03', number: 3, title: 'The Art of Resilience',      topic: 'Psychology · Language · Architecture' },
+  { id: 'exam-04', number: 4, title: 'The Allure of Minimalism',   topic: 'Philosophy · History · Urban planning' },
+  { id: 'exam-05', number: 5, title: 'The Psychology of Flow',     topic: 'Science · History · Music · Technology' },
+];
 ---
 
 <LevelLayout
-  title="C1 Advanced (CAE) — Cloze Test Demo | The English Hacker"
-  description="Practice the Cambridge C1 Advanced Use of English cloze test in real format. 8 questions. Free demo."
+  title="C1 Advanced (CAE) | The English Hacker"
+  description="Practice the Cambridge C1 Advanced exam in real format. Free demo + 5 full exams when unlocked."
   level="C1_ADVANCED"
   levelLabel="C1 Advanced (CAE)"
   exerciseType="CLOZE_TEST"
 >
+
+  <!-- ─── Free demo ─────────────────────────────────────────────── -->
   <div class="px-6 pt-8 max-w-3xl mx-auto">
-    <div class="text-xs text-hacker-dim mb-2">// EXERCISE_01 — USE OF ENGLISH · PART 1</div>
+    <div class="text-xs text-hacker-dim mb-2">// FREE_DEMO — USE OF ENGLISH · PART 1</div>
     <h1 class="text-xl font-bold text-hacker-text mb-1">{exercise.title}</h1>
     <p class="text-xs text-hacker-dim">
       Cambridge C1 Advanced format · 8 questions · Choose A, B, C or D
@@ -27,15 +37,63 @@ const stripeUrl = import.meta.env.STRIPE_C1_URL ?? '/unlock';
     unlockUrl={stripeUrl}
   />
 
-  <div class="max-w-3xl mx-auto px-6 pb-10">
-    <div class="border-t border-hacker-border pt-8 text-center space-y-4">
-      <p class="text-xs text-hacker-dim">Liked the demo? Unlock the full C1 pack.</p>
-      <a
-        href="/unlock"
-        class="inline-block border border-hacker-green text-hacker-green px-8 py-3 font-bold text-sm hover:bg-hacker-green hover:text-hacker-bg transition-colors"
-      >
-        &gt;_ SEE FULL PACK — 9€
-      </a>
+  <!-- ─── Full pack: 5 exams ────────────────────────────────────── -->
+  <section class="max-w-3xl mx-auto px-6 pb-16 mt-12">
+
+    <div class="border-t border-hacker-border pt-10 mb-6">
+      <div class="text-xs text-hacker-dim mb-1">// FULL_PACK</div>
+      <h2 class="text-lg font-bold text-hacker-text">5 Complete C1 Advanced Exams</h2>
+      <p class="text-xs text-hacker-dim mt-1">8 parts · 56 questions · Answer key + explanations</p>
     </div>
-  </div>
+
+    <!-- Unlocked state -->
+    <div id="exams-unlocked" class="hidden space-y-3">
+      {exams.map(e => (
+        <a
+          href={`/c1/${e.id}`}
+          class="flex items-center justify-between border border-hacker-green p-4 hover:bg-hacker-green/5 transition-colors group"
+        >
+          <div>
+            <div class="text-xs text-hacker-dim mb-1">// EXAM_{String(e.number).padStart(2, '0')}</div>
+            <div class="text-sm font-bold text-hacker-text group-hover:text-hacker-green transition-colors">{e.title}</div>
+            <div class="text-xs text-hacker-dim mt-0.5">{e.topic}</div>
+          </div>
+          <span class="text-hacker-green text-xs font-bold ml-4 shrink-0">&gt;_ START →</span>
+        </a>
+      ))}
+    </div>
+
+    <!-- Locked state -->
+    <div id="exams-locked" class="space-y-3">
+      {exams.map(e => (
+        <div class="flex items-center justify-between border border-hacker-border p-4 opacity-50 select-none">
+          <div>
+            <div class="text-xs text-hacker-dim mb-1">// EXAM_{String(e.number).padStart(2, '0')}</div>
+            <div class="text-sm font-bold text-hacker-text">{e.title}</div>
+            <div class="text-xs text-hacker-dim mt-0.5">{e.topic}</div>
+          </div>
+          <span class="text-hacker-dim text-xs font-bold ml-4 shrink-0">[ LOCKED ]</span>
+        </div>
+      ))}
+      <div class="pt-6 text-center space-y-4">
+        <p class="text-xs text-hacker-dim">Unlock the full pack — 9€ one-time payment. No subscription.</p>
+        <a
+          href={stripeUrl}
+          class="inline-block bg-hacker-green text-hacker-bg px-8 py-3 font-bold text-sm hover:bg-hacker-green-dim transition-colors"
+        >
+          &gt;_ UNLOCK FULL ACCESS — 9€
+        </a>
+      </div>
+    </div>
+
+  </section>
+
 </LevelLayout>
+
+<script>
+  const hasAccess = localStorage.getItem('teh_unlocked_c1') === 'true';
+  if (hasAccess) {
+    document.getElementById('exams-unlocked')!.classList.remove('hidden');
+    document.getElementById('exams-locked')!.classList.add('hidden');
+  }
+</script>
