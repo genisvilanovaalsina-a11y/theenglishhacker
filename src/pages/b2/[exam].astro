@@ -1,0 +1,59 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ExamPlayer from '../../components/exam/ExamPlayer';
+import { exam01, exam02, exam03, exam04, exam05 } from '../../data/exercises/b2/index';
+import type { Exam } from '../../data/exercises/types';
+
+export function getStaticPaths() {
+  return [
+    { params: { exam: 'exam-01' } },
+    { params: { exam: 'exam-02' } },
+    { params: { exam: 'exam-03' } },
+    { params: { exam: 'exam-04' } },
+    { params: { exam: 'exam-05' } },
+  ];
+}
+
+const examMap: Record<string, Exam> = {
+  'exam-01': exam01,
+  'exam-02': exam02,
+  'exam-03': exam03,
+  'exam-04': exam04,
+  'exam-05': exam05,
+};
+
+const { exam } = Astro.params;
+const examData = examMap[exam];
+const stripeUrl = import.meta.env.STRIPE_B2_URL ?? '/unlock';
+---
+
+<BaseLayout
+  title={`B2 Exam ${examData.number} | The English Hacker`}
+  description={`Cambridge B2 First full exam — 7 parts, 52 questions. The English Hacker.`}
+  noIndex={false}
+>
+  <header class="border-b border-hacker-border px-4 py-3 text-xs text-hacker-dim overflow-x-auto">
+    <div class="flex items-center gap-6 min-w-max">
+      <a href="/" class="text-hacker-green hover:text-hacker-green-dim transition-colors">&gt;_ TheEnglishHacker</a>
+      <a href="/b2" class="hover:text-hacker-green transition-colors">[ LEVEL: B2_FIRST ]</a>
+      <span>[ EXAM: <span class="text-hacker-text">0{examData.number}</span> ]</span>
+      <span>[ PARTS: <span class="text-hacker-text">7</span> ]</span>
+      <span>[ QUESTIONS: <span class="text-hacker-text">52</span> ]</span>
+    </div>
+  </header>
+
+  <main>
+    <ExamPlayer
+      client:load
+      exam={examData}
+      unlockUrl={stripeUrl}
+    />
+  </main>
+
+  <footer class="border-t border-hacker-border px-6 py-6 mt-8 text-xs text-hacker-dim">
+    <div class="max-w-4xl mx-auto flex flex-wrap justify-between gap-4">
+      <a href="/b2" class="hover:text-hacker-green transition-colors">← Back to B2</a>
+      <span>&copy; {new Date().getFullYear()} TheEnglishHacker.com</span>
+    </div>
+  </footer>
+</BaseLayout>

@@ -1,0 +1,114 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Dev Tools | The English Hacker"
+  description="Internal development tools."
+  noIndex={true}
+>
+  <main class="min-h-screen flex flex-col items-center justify-center px-6 py-20 space-y-10">
+
+    <div class="space-y-2 text-center">
+      <div class="text-xs text-hacker-dim">// DEV_TOOLS — localhost only</div>
+      <h1 class="text-2xl font-bold text-hacker-green">&gt;_ localStorage controls</h1>
+    </div>
+
+    <div class="border border-hacker-dim p-8 w-full max-w-sm space-y-6">
+
+      <div class="space-y-3">
+        <div class="text-xs text-hacker-dim">// B2</div>
+        <div class="flex gap-3">
+          <button
+            id="unlock-b2"
+            class="flex-1 bg-hacker-green text-hacker-bg px-4 py-2 text-sm font-bold hover:opacity-80 transition-opacity"
+          >
+            Unlock B2
+          </button>
+          <button
+            id="lock-b2"
+            class="flex-1 border border-hacker-green text-hacker-green px-4 py-2 text-sm font-bold hover:bg-hacker-green hover:text-hacker-bg transition-colors"
+          >
+            Lock B2
+          </button>
+        </div>
+        <div class="text-xs text-hacker-dim">
+          status: <span id="status-b2" class="text-hacker-green">—</span>
+        </div>
+      </div>
+
+      <div class="space-y-3">
+        <div class="text-xs text-hacker-dim">// C1</div>
+        <div class="flex gap-3">
+          <button
+            id="unlock-c1"
+            class="flex-1 bg-hacker-green text-hacker-bg px-4 py-2 text-sm font-bold hover:opacity-80 transition-opacity"
+          >
+            Unlock C1
+          </button>
+          <button
+            id="lock-c1"
+            class="flex-1 border border-hacker-green text-hacker-green px-4 py-2 text-sm font-bold hover:bg-hacker-green hover:text-hacker-bg transition-colors"
+          >
+            Lock C1
+          </button>
+        </div>
+        <div class="text-xs text-hacker-dim">
+          status: <span id="status-c1" class="text-hacker-green">—</span>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="text-xs text-hacker-dim text-center space-y-1">
+      <div>teh_unlocked_b2 · teh_unlocked_c1</div>
+      <div class="text-red-500">not accessible in production</div>
+    </div>
+
+  </main>
+</BaseLayout>
+
+<script>
+  // Client-side guard: redirect if not on localhost (backup for static deploys)
+  if (location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
+    location.replace('/404');
+  }
+
+  const B2_KEY = 'teh_unlocked_b2';
+  const C1_KEY = 'teh_unlocked_c1';
+
+  function getStatus(key: string): string {
+    return localStorage.getItem(key) ? 'UNLOCKED' : 'locked';
+  }
+
+  function updateStatus() {
+    const b2El = document.getElementById('status-b2')!;
+    const c1El = document.getElementById('status-c1')!;
+    const b2Val = getStatus(B2_KEY);
+    const c1Val = getStatus(C1_KEY);
+
+    b2El.textContent = b2Val;
+    b2El.className = b2Val === 'UNLOCKED' ? 'text-hacker-green font-bold' : 'text-hacker-dim';
+    c1El.textContent = c1Val;
+    c1El.className = c1Val === 'UNLOCKED' ? 'text-hacker-green font-bold' : 'text-hacker-dim';
+  }
+
+  document.getElementById('unlock-b2')!.addEventListener('click', () => {
+    localStorage.setItem(B2_KEY, 'true');
+    updateStatus();
+  });
+  document.getElementById('lock-b2')!.addEventListener('click', () => {
+    localStorage.removeItem(B2_KEY);
+    updateStatus();
+  });
+  document.getElementById('unlock-c1')!.addEventListener('click', () => {
+    localStorage.setItem(C1_KEY, 'true');
+    updateStatus();
+  });
+  document.getElementById('lock-c1')!.addEventListener('click', () => {
+    localStorage.removeItem(C1_KEY);
+    updateStatus();
+  });
+
+  updateStatus();
+</script>
