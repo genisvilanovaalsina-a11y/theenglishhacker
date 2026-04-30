@@ -7,6 +7,7 @@ import type {
   WordFormationPart,
   KWTPart,
   ReadingMCQPart,
+  CrossTextPart,
   GappedTextPart,
   MultipleMatchingPart,
 } from '../../data/exercises/types';
@@ -24,8 +25,9 @@ const PART_LABELS: Record<string, string> = {
   'word-formation':         'USE OF ENGLISH · PART 3 — Word formation',
   'key-word-transformation':'USE OF ENGLISH · PART 4 — Key word transformations',
   'reading-mcq':            'READING · PART 5 — Multiple choice',
-  'gapped-text':            'READING · PART 6 — Gapped text',
-  'multiple-matching':      'READING · PART 7 — Multiple matching',
+  'cross-text':             'READING · PART 6 — Cross-text multiple matching',
+  'gapped-text':            'READING · PART 7 — Gapped text',
+  'multiple-matching':      'READING · PART 8 — Multiple matching',
 };
 
 function isCorrect(part: ExamPart, qNum: number, userAnswer: string): boolean {
@@ -450,6 +452,56 @@ export default function ExamPlayer({ exam, unlockUrl }: Props) {
     );
   }
 
+  function renderCrossText(p: CrossTextPart) {
+    return (
+      <div className="space-y-8">
+        <div className="text-xs text-hacker-dim mb-2">{p.intro}</div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {p.texts.map(t => (
+            <div key={t.label} className="border border-hacker-border p-4">
+              <div className="text-xs font-bold text-hacker-green mb-2">{t.label}: {t.name}</div>
+              <p className="text-xs text-hacker-dim leading-6">{t.text}</p>
+            </div>
+          ))}
+        </div>
+        <div className="space-y-3">
+          <div className="text-xs text-hacker-dim mb-2">// CHOOSE WHICH EXPERT (A–D) MATCHES EACH QUESTION</div>
+          {p.questions.map(q => {
+            const correct = isCorrect(part, q.number, partAnswers[q.number] || '');
+            return (
+              <div key={q.number} className="border border-hacker-border p-3 flex gap-4 items-start">
+                <div className="flex gap-1 shrink-0 mt-0.5">
+                  {(['A','B','C','D'] as const).map(lbl => {
+                    const sel = partAnswers[q.number] === lbl;
+                    let cls = 'border-hacker-border text-hacker-dim hover:border-hacker-green hover:text-hacker-green';
+                    if (isSubmitted) {
+                      if (lbl === q.answer) cls = 'border-hacker-green text-hacker-green bg-hacker-green/5';
+                      else if (sel) cls = 'border-hacker-red text-hacker-red bg-hacker-red/5';
+                      else cls = 'border-hacker-border text-hacker-dim opacity-30';
+                    } else if (sel) {
+                      cls = 'border-hacker-green text-hacker-green bg-hacker-green/5';
+                    }
+                    return (
+                      <button key={lbl} disabled={isSubmitted}
+                        onClick={() => !isSubmitted && setAnswer(q.number, lbl)}
+                        className={`border w-7 h-7 text-xs font-bold transition-colors disabled:cursor-default ${cls}`}
+                      >{lbl}</button>
+                    );
+                  })}
+                </div>
+                <div className="text-xs text-hacker-text flex-1 leading-6">
+                  <span className="text-hacker-dim mr-2">{q.number}.</span>{q.text}
+                  {isSubmitted && !correct && <span className="ml-2 text-hacker-red">→ {q.answer}</span>}
+                  {isSubmitted && q.explanation && <span className="ml-2 text-hacker-dim">({q.explanation})</span>}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
+
   function renderMultipleMatching(p: MultipleMatchingPart) {
     return (
       <div className="space-y-8">
@@ -514,6 +566,7 @@ export default function ExamPlayer({ exam, unlockUrl }: Props) {
     if (part.type === 'word-formation')         return renderWordFormation(part as WordFormationPart);
     if (part.type === 'key-word-transformation')return renderKWT(part as KWTPart);
     if (part.type === 'reading-mcq')            return renderReadingMCQ(part as ReadingMCQPart);
+    if (part.type === 'cross-text')             return renderCrossText(part as CrossTextPart);
     if (part.type === 'gapped-text')            return renderGappedText(part as GappedTextPart);
     if (part.type === 'multiple-matching')      return renderMultipleMatching(part as MultipleMatchingPart);
     return null;
@@ -522,7 +575,7 @@ export default function ExamPlayer({ exam, unlockUrl }: Props) {
   const pct = isSubmitted ? Math.round((score / total) * 100) : 0;
   const scoreColor = pct >= 75 ? 'text-hacker-green' : pct >= 50 ? 'text-hacker-amber' : 'text-hacker-red';
   const partTitle = 'title' in part ? (part as MCClozePart | OpenClozePart | WordFormationPart).title
-    : 'articleTitle' in part ? (part as ReadingMCQPart | GappedTextPart).articleTitle
+    : 'articleTitle' in part ? (part as ReadingMCQPart | CrossTextPart | GappedTextPart).articleTitle
     : '';
 
   return (
