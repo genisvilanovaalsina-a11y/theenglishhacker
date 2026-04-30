@@ -3,7 +3,7 @@ import LevelLayout from '../layouts/LevelLayout.astro';
 import ExercisePlayer from '../components/exercise/ExercisePlayer';
 import { exercise } from '../data/exercises/c1/demo-cloze-01';
 
-const stripeUrl = import.meta.env.PUBLIC_STRIPE_C1_URL ?? '#';
+const stripeUrl = import.meta.env.STRIPE_C1_URL ?? '/unlock';
 ---
 
 <LevelLayout
