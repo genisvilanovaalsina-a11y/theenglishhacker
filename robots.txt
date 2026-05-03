@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://theenglishhacker.com/sitemap-index.xml
