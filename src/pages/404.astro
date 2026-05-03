@@ -1,0 +1,23 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="404 — Not Found | The English Hacker"
+  description="Page not found."
+  noIndex={true}
+>
+  <main class="min-h-screen flex flex-col items-center justify-center px-6 text-center space-y-6">
+    <div class="text-xs text-hacker-dim">// ERROR_404</div>
+    <h1 class="text-4xl font-bold text-hacker-red">[ NOT_FOUND ]</h1>
+    <p class="text-sm text-hacker-dim max-w-sm">
+      This page doesn't exist. Maybe it was moved, or you followed a broken link.
+    </p>
+    <a
+      href="/"
+      class="border border-hacker-green text-hacker-green px-8 py-3 font-bold text-sm hover:bg-hacker-green hover:text-hacker-bg transition-colors"
+    >
+      &gt;_ BACK TO HOME
+    </a>
+  </main>
+</BaseLayout>
