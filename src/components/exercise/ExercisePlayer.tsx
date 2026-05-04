@@ -8,11 +8,21 @@ interface Props {
 
 type Answers = Record<number, string>;
 
+const EMAIL_KEY = 'teh_email_captured';
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export default function ExercisePlayer({ exercise, unlockUrl }: Props) {
   const [answers, setAnswers] = useState<Answers>({});
   const [submitted, setSubmitted] = useState(false);
   const [hasAccess, setHasAccess] = useState(false);
   const [activeQ, setActiveQ] = useState(1);
+
+  // Email gate state
+  const [showEmailGate, setShowEmailGate] = useState(false);
+  const [emailInput, setEmailInput] = useState('');
+  const [gdprChecked, setGdprChecked] = useState(false);
+  const [emailError, setEmailError] = useState('');
+  const [emailSending, setEmailSending] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem(`teh_unlocked_${exercise.level}`);
@@ -46,22 +56,66 @@ export default function ExercisePlayer({ exercise, unlockUrl }: Props) {
   const score = submitted
     ? exercise.questions.filter(q => answers[q.id] === q.answer).length
     : 0;
-
   const pct = submitted ? Math.round((score / exercise.questions.length) * 100) : 0;
+  const scoreColor = pct >= 75 ? 'text-hacker-green' : pct >= 50 ? 'text-hacker-amber' : 'text-hacker-red';
 
-  const scoreColor =
-    pct >= 75 ? 'text-hacker-green' : pct >= 50 ? 'text-hacker-amber' : 'text-hacker-red';
+  const revealResults = useCallback(() => {
+    const s = exercise.questions.filter(q => answers[q.id] === q.answer).length;
+    const p = Math.round((s / exercise.questions.length) * 100);
+    setSubmitted(true);
+    const key = `eh_${exercise.level}_progress`;
+    const prev = JSON.parse(localStorage.getItem(key) || '[]') as number[];
+    localStorage.setItem(key, JSON.stringify([...prev, p]));
+  }, [answers, exercise.questions, exercise.level]);
 
   const handleSubmit = useCallback(() => {
     if (Object.keys(answers).length < exercise.questions.length) {
       alert('Answer all questions before submitting.');
       return;
     }
-    setSubmitted(true);
-    const key = `eh_${exercise.level}_progress`;
-    const prev = JSON.parse(localStorage.getItem(key) || '[]') as number[];
-    localStorage.setItem(key, JSON.stringify([...prev, pct]));
-  }, [answers, exercise.questions.length, exercise.level, pct]);
+    if (localStorage.getItem(EMAIL_KEY) === 'true') {
+      revealResults();
+    } else {
+      setShowEmailGate(true);
+    }
+  }, [answers, exercise.questions.length, revealResults]);
+
+  const handleEmailSubmit = useCallback(async () => {
+    setEmailError('');
+    if (!EMAIL_REGEX.test(emailInput.trim())) {
+      setEmailError('Please enter a valid email address.');
+      return;
+    }
+    if (!gdprChecked) {
+      setEmailError('Please agree to receive learning tips to continue.');
+      return;
+    }
+
+    setEmailSending(true);
+
+    const formspreeId = import.meta.env.PUBLIC_FORMSPREE_ID;
+    if (formspreeId && formspreeId !== 'your_formspree_form_id') {
+      try {
+        await fetch(`https://formspree.io/f/${formspreeId}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({
+            email: emailInput.trim(),
+            level: exercise.level.toUpperCase(),
+            source: 'demo',
+            _subject: `New demo lead — ${exercise.level.toUpperCase()}`,
+          }),
+        });
+      } catch {
+        // Fail silently — never block the user from seeing results
+      }
+    }
+
+    localStorage.setItem(EMAIL_KEY, 'true');
+    setEmailSending(false);
+    setShowEmailGate(false);
+    revealResults();
+  }, [emailInput, gdprChecked, exercise.level, revealResults]);
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-10 space-y-10">
@@ -97,13 +151,11 @@ export default function ExercisePlayer({ exercise, unlockUrl }: Props) {
 
       {/* Questions */}
       <div className="space-y-6">
-        {exercise.questions.map((q, idx) => (
+        {exercise.questions.map((q) => (
           <div
             key={q.id}
             className={`border p-4 transition-colors cursor-pointer ${
-              activeQ === q.id && !submitted
-                ? 'border-hacker-green'
-                : 'border-hacker-border'
+              activeQ === q.id && !submitted ? 'border-hacker-green' : 'border-hacker-border'
             }`}
             onClick={() => !submitted && setActiveQ(q.id)}
           >
@@ -151,8 +203,8 @@ export default function ExercisePlayer({ exercise, unlockUrl }: Props) {
         ))}
       </div>
 
-      {/* Submit */}
-      {!submitted && (
+      {/* Submit button */}
+      {!submitted && !showEmailGate && (
         <div className="flex items-center gap-6">
           <button
             onClick={handleSubmit}
@@ -163,6 +215,58 @@ export default function ExercisePlayer({ exercise, unlockUrl }: Props) {
           <span className="text-xs text-hacker-dim">
             {Object.keys(answers).length}/{exercise.questions.length} answered
           </span>
+        </div>
+      )}
+
+      {/* Email gate */}
+      {showEmailGate && !submitted && (
+        <div className="border border-hacker-green p-6 space-y-5 animate-fadein">
+          <div className="space-y-1">
+            <div className="text-xs text-hacker-dim">// RESULT_READY</div>
+            <h2 className="text-lg font-bold text-hacker-text">
+              Get your detailed result + tips by email
+            </h2>
+            <p className="text-xs text-hacker-dim">
+              One email with your score breakdown and what to study next. No spam.
+            </p>
+          </div>
+
+          <div className="space-y-3">
+            <label className="block text-xs text-hacker-dim">&gt;_ YOUR EMAIL</label>
+            <input
+              type="email"
+              value={emailInput}
+              onChange={e => { setEmailInput(e.target.value); setEmailError(''); }}
+              onKeyDown={e => e.key === 'Enter' && handleEmailSubmit()}
+              placeholder="you@example.com"
+              className="w-full bg-transparent border border-hacker-border px-4 py-3 text-sm text-hacker-text placeholder-hacker-muted focus:border-hacker-green focus:outline-none transition-colors"
+              autoFocus
+            />
+          </div>
+
+          <label className="flex items-start gap-3 cursor-pointer group">
+            <input
+              type="checkbox"
+              checked={gdprChecked}
+              onChange={e => { setGdprChecked(e.target.checked); setEmailError(''); }}
+              className="mt-0.5 accent-hacker-green shrink-0"
+            />
+            <span className="text-xs text-hacker-dim group-hover:text-hacker-text transition-colors">
+              I agree to receive learning tips from TheEnglishHacker. Unsubscribe anytime.
+            </span>
+          </label>
+
+          {emailError && (
+            <p className="text-xs text-hacker-red">{emailError}</p>
+          )}
+
+          <button
+            onClick={handleEmailSubmit}
+            disabled={emailSending}
+            className="w-full bg-hacker-green text-hacker-bg px-6 py-3 font-bold text-sm hover:bg-hacker-green-dim transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+          >
+            {emailSending ? '...' : '&gt;_ SHOW MY RESULT'}
+          </button>
         </div>
       )}
 
@@ -180,14 +284,11 @@ export default function ExercisePlayer({ exercise, unlockUrl }: Props) {
             {pct < 50 && <span className="ml-4 text-hacker-red">[ NEEDS WORK ]</span>}
           </div>
 
-          {/* Locked content teaser / unlock CTA */}
           <div className="mt-8 border-t border-hacker-border pt-8 space-y-4">
             {hasAccess ? (
               <div>
                 <div className="text-xs text-hacker-green mb-2">[ FULL_ACCESS: ACTIVE ]</div>
-                <p className="text-xs text-hacker-dim">
-                  More exercises are being added. Check back soon.
-                </p>
+                <p className="text-xs text-hacker-dim">More exercises are being added. Check back soon.</p>
               </div>
             ) : (
               <div>
@@ -203,8 +304,7 @@ export default function ExercisePlayer({ exercise, unlockUrl }: Props) {
                   ))}
                 </div>
                 <p className="text-xs text-hacker-dim mb-4">
-                  Unlock the full pack — {exercise.level === 'b2' ? '7€' : '9€'} one-time payment.
-                  Real exam format. No subscription.
+                  Unlock the full pack — {exercise.level === 'b2' ? '7€' : '9€'} one-time payment. Real exam format. No subscription.
                 </p>
                 <a
                   href={unlockUrl || '/unlock'}
@@ -219,7 +319,7 @@ export default function ExercisePlayer({ exercise, unlockUrl }: Props) {
       )}
 
       {/* Keyboard hint */}
-      {!submitted && (
+      {!submitted && !showEmailGate && (
         <div className="text-xs text-hacker-dim border-t border-hacker-border pt-4">
           <span className="text-hacker-green">POWER USER:</span> Press 1/2/3/4 to select options · ↑↓ or Tab to move between questions
         </div>
