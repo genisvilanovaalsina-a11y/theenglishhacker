@@ -10,5 +10,14 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
   },
-  integrations: [react(), sitemap()],
+  integrations: [
+    react(),
+    sitemap({
+      filter: (page) => ![
+        'https://theenglishhacker.com/dev/',
+        'https://theenglishhacker.com/unlock/',
+        'https://theenglishhacker.com/thanks/',
+      ].includes(page),
+    }),
+  ],
 });
