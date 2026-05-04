@@ -1,0 +1,38 @@
+---
+---
+<div id="teh-cookie" class="hidden fixed bottom-0 left-0 right-0 z-50 border-t border-hacker-border bg-hacker-bg">
+  <div class="max-w-4xl mx-auto px-6 py-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+    <p class="text-xs text-hacker-dim leading-relaxed">
+      // ANALYTICS — We use GA4 + Clarity to improve this site. No ads, no data sold.
+      <a href="/cookies" class="text-hacker-green hover:underline ml-1">Cookie policy →</a>
+    </p>
+    <div class="flex gap-3 shrink-0">
+      <button id="teh-decline" class="border border-hacker-border text-hacker-dim px-4 py-2 text-xs font-mono hover:border-hacker-green hover:text-hacker-text transition-colors">
+        Decline
+      </button>
+      <button id="teh-accept" class="bg-hacker-green text-hacker-bg px-4 py-2 text-xs font-bold font-mono hover:opacity-90 transition-opacity">
+        &gt;_ Accept
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const CONSENT_KEY = 'teh_analytics_consent';
+  const banner = document.getElementById('teh-cookie')!;
+
+  if (localStorage.getItem(CONSENT_KEY) === null) {
+    banner.classList.remove('hidden');
+  }
+
+  document.getElementById('teh-decline')!.addEventListener('click', () => {
+    localStorage.setItem(CONSENT_KEY, 'false');
+    banner.classList.add('hidden');
+  });
+
+  document.getElementById('teh-accept')!.addEventListener('click', () => {
+    localStorage.setItem(CONSENT_KEY, 'true');
+    banner.classList.add('hidden');
+    (window as any).__loadAnalytics?.();
+  });
+</script>

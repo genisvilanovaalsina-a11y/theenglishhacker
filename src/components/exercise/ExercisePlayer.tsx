@@ -1,5 +1,12 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import type { Exercise } from '../../data/exercises/types';
+
+declare global {
+  interface Window { gtag?: (...args: unknown[]) => void; }
+}
+function track(name: string, params?: Record<string, string | number>) {
+  window.gtag?.('event', name, params);
+}
 
 interface Props {
   exercise: Exercise;
@@ -14,6 +21,7 @@ const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 export default function ExercisePlayer({ exercise, unlockUrl }: Props) {
   const [answers, setAnswers] = useState<Answers>({});
   const [submitted, setSubmitted] = useState(false);
+  const demoStartedRef = useRef(false);
   const [hasAccess, setHasAccess] = useState(false);
   const [activeQ, setActiveQ] = useState(1);
 
@@ -37,7 +45,10 @@ export default function ExercisePlayer({ exercise, unlockUrl }: Props) {
         const q = exercise.questions[activeQ - 1];
         if (q) {
           const opt = q.options[num - 1];
-          if (opt) setAnswers(prev => ({ ...prev, [q.id]: opt.value }));
+          if (opt) {
+            if (!demoStartedRef.current) { demoStartedRef.current = true; track('demo_started', { level: exercise.level }); }
+            setAnswers(prev => ({ ...prev, [q.id]: opt.value }));
+          }
         }
       }
       if (e.key === 'ArrowDown' || e.key === 'Tab') {
@@ -63,6 +74,7 @@ export default function ExercisePlayer({ exercise, unlockUrl }: Props) {
     const s = exercise.questions.filter(q => answers[q.id] === q.answer).length;
     const p = Math.round((s / exercise.questions.length) * 100);
     setSubmitted(true);
+    track('demo_completed', { level: exercise.level, score: p });
     const key = `eh_${exercise.level}_progress`;
     const prev = JSON.parse(localStorage.getItem(key) || '[]') as number[];
     localStorage.setItem(key, JSON.stringify([...prev, p]));
@@ -109,6 +121,7 @@ export default function ExercisePlayer({ exercise, unlockUrl }: Props) {
     }
 
     localStorage.setItem(EMAIL_KEY, 'true');
+    track('email_captured', { level: exercise.level });
     setEmailSending(false);
     setShowEmailGate(false);
     revealResults();
@@ -179,7 +192,10 @@ export default function ExercisePlayer({ exercise, unlockUrl }: Props) {
                     disabled={submitted}
                     onClick={(e) => {
                       e.stopPropagation();
-                      if (!submitted) setAnswers(prev => ({ ...prev, [q.id]: opt.value }));
+                      if (!submitted) {
+                        if (!demoStartedRef.current) { demoStartedRef.current = true; track('demo_started', { level: exercise.level }); }
+                        setAnswers(prev => ({ ...prev, [q.id]: opt.value }));
+                      }
                     }}
                     className={`border px-3 py-2 text-left text-xs transition-colors hover:border-hacker-green hover:text-hacker-green disabled:cursor-default ${style}`}
                   >
@@ -305,6 +321,7 @@ export default function ExercisePlayer({ exercise, unlockUrl }: Props) {
                 </p>
                 <a
                   href={unlockUrl || '/unlock'}
+                  onClick={() => track('checkout_clicked', { level: exercise.level })}
                   className="inline-block bg-hacker-green text-hacker-bg px-8 py-3 font-bold text-sm hover:bg-hacker-green-dim transition-colors"
                 >
                   &gt;_ UNLOCK FULL ACCESS →

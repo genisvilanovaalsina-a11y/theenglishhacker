@@ -74,8 +74,10 @@ import Footer from '../components/layout/Footer.astro';
   } else if (level === 'c1') {
     localStorage.setItem('teh_unlocked_c1', 'true');
   } else {
-    // Fallback: both (if Stripe doesn't pass level param)
     localStorage.setItem('teh_unlocked_b2', 'true');
     localStorage.setItem('teh_unlocked_c1', 'true');
+  }
+  if (typeof window.gtag === 'function') {
+    window.gtag('event', 'purchase_success', { level: level ?? 'all' });
   }
 </script>
