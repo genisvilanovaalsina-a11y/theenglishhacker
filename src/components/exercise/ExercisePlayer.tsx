@@ -94,15 +94,16 @@ export default function ExercisePlayer({ exercise, unlockUrl }: Props) {
     setEmailSending(true);
 
     try {
-      await fetch(
-        'https://script.google.com/macros/s/AKfycbxxABvGCvbcD4Q8FaMUvKGBu4kjZ_lsofumf5uZlNkpmVSKiq3OdhVNufCPxCVxZk3u/exec',
-        {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: emailInput.trim(), level: exercise.level.toUpperCase() }),
-        },
-      );
+      await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          access_key: '90a1dfff-427e-4a9a-9dbc-38726e39899c',
+          email: emailInput.trim(),
+          subject: `New demo lead — ${exercise.level.toUpperCase()}`,
+          level: exercise.level.toUpperCase(),
+        }),
+      });
     } catch {
       // Fail silently — never block the user from seeing results
     }
