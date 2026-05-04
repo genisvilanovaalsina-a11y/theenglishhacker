@@ -94,13 +94,32 @@ export default function ExercisePlayer({ exercise, unlockUrl }: Props) {
     setEmailSending(true);
 
     try {
-      const body = new FormData();
-      body.append('entry.227649005', emailInput.trim());
-      body.append('entry.1633920210', exercise.level.toUpperCase());
-      await fetch(
-        'https://docs.google.com/forms/d/e/1FAIpQLSd9MZthfEIcmKEVFgR9AJHmtkmKhRqwyeg4AZd8YLUPaPEEcw/formResponse',
-        { method: 'POST', mode: 'no-cors', body },
-      );
+      const iframe = document.createElement('iframe');
+      iframe.name = '_gf_submit';
+      iframe.style.display = 'none';
+      document.body.appendChild(iframe);
+
+      const form = document.createElement('form');
+      form.action = 'https://docs.google.com/forms/d/e/1FAIpQLSd9MZthfEIcmKEVFgR9AJHmtkmKhRqwyeg4AZd8YLUPaPEEcw/formResponse';
+      form.method = 'POST';
+      form.target = '_gf_submit';
+
+      const addField = (name: string, value: string) => {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = name;
+        input.value = value;
+        form.appendChild(input);
+      };
+      addField('entry.227649005', emailInput.trim());
+      addField('entry.1633920210', exercise.level.toUpperCase());
+
+      document.body.appendChild(form);
+      form.submit();
+      setTimeout(() => {
+        document.body.removeChild(form);
+        document.body.removeChild(iframe);
+      }, 3000);
     } catch {
       // Fail silently — never block the user from seeing results
     }
