@@ -93,22 +93,16 @@ export default function ExercisePlayer({ exercise, unlockUrl }: Props) {
 
     setEmailSending(true);
 
-    const formspreeId = import.meta.env.PUBLIC_FORMSPREE_ID;
-    if (formspreeId && formspreeId !== 'your_formspree_form_id') {
-      try {
-        await fetch(`https://formspree.io/f/${formspreeId}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-          body: JSON.stringify({
-            email: emailInput.trim(),
-            level: exercise.level.toUpperCase(),
-            source: 'demo',
-            _subject: `New demo lead — ${exercise.level.toUpperCase()}`,
-          }),
-        });
-      } catch {
-        // Fail silently — never block the user from seeing results
-      }
+    try {
+      const body = new FormData();
+      body.append('entry.227649005', emailInput.trim());
+      body.append('entry.1633920210', exercise.level.toUpperCase());
+      await fetch(
+        'https://docs.google.com/forms/d/e/1FAIpQLSd9MZthfEIcmKEVFgR9AJHmtkmKhRqwyeg4AZd8YLUPaPEEcw/formResponse',
+        { method: 'POST', mode: 'no-cors', body },
+      );
+    } catch {
+      // Fail silently — never block the user from seeing results
     }
 
     localStorage.setItem(EMAIL_KEY, 'true');
