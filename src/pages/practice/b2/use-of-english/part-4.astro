@@ -1,0 +1,486 @@
+---
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import MiniQuiz from '../../../../components/practice/MiniQuiz';
+import type { QuizQuestion } from '../../../../components/practice/MiniQuiz';
+
+const unlockUrl = import.meta.env.STRIPE_B2_URL ?? '/unlock';
+
+const quizQuestions: QuizQuestion[] = [
+  {
+    id: 1,
+    sentence: 'Original: "It is possible that she left before we arrived."\nKey word: MIGHT\n\nShe ___ before we arrived.',
+    options: [
+      { key: 'A', value: 'might leave' },
+      { key: 'B', value: 'might have left' },
+      { key: 'C', value: 'might left' },
+      { key: 'D', value: 'might be leaving' },
+    ],
+    answer: 'B',
+    explanation: 'Modal perfect: "might have left" (modal + have + past participle) expresses past possibility. "Might leave" expresses present/future possibility. "Might left" is grammatically impossible — past participle must follow "have".',
+    gapType: 'modal perfect',
+  },
+  {
+    id: 2,
+    sentence: 'Original: "A mechanic fixed our car at the garage last week."\nKey word: HAD\n\nWe ___ at the garage last week.',
+    options: [
+      { key: 'A', value: 'had a mechanic fix our car' },
+      { key: 'B', value: 'had our car fixed' },
+      { key: 'C', value: 'had our car fix' },
+      { key: 'D', value: 'had the mechanic fixing our car' },
+    ],
+    answer: 'B',
+    explanation: 'Causative "have": have + object + past participle. "We had our car fixed" = we arranged for someone to fix it. Option A ("had a mechanic fix") is also grammatically possible but uses "have + object + infinitive without to", which is less standard for B2 KWT. The key here is "fixed" (past participle), not "fix" (bare infinitive).',
+    gapType: 'causative have',
+  },
+  {
+    id: 3,
+    sentence: 'Original: "She last spoke to her mother on Tuesday."\nKey word: SPOKEN\n\nShe ___ her mother since Tuesday.',
+    options: [
+      { key: 'A', value: "hasn't spoken to" },
+      { key: 'B', value: "hasn't spoken with" },
+      { key: 'C', value: "hadn't spoken to" },
+      { key: 'D', value: "has not spoken at" },
+    ],
+    answer: 'A',
+    explanation: 'Present perfect + since: "hasn\'t spoken to" (has not + past participle). The time marker "last... on Tuesday" → "since Tuesday" signals present perfect tense. "Hadn\'t spoken" (past perfect) is wrong here — the period hasn\'t ended. "Spoken with" is valid in American English but "speak to" is the Cambridge-preferred preposition at B2 level.',
+    gapType: 'present perfect + since',
+  },
+  {
+    id: 4,
+    sentence: 'Original: "No other student in the class works as hard as Maria."\nKey word: HARDEST\n\nMaria ___.',
+    options: [
+      { key: 'A', value: 'works hardest than any student' },
+      { key: 'B', value: 'is the hardest-working student in the class' },
+      { key: 'C', value: 'works the hardest of the class' },
+      { key: 'D', value: 'is the hardest student to work in class' },
+    ],
+    answer: 'B',
+    explanation: '"The hardest-working student in the class" correctly uses the superlative + noun phrase. Note the hyphen in "hardest-working" (compound adjective before noun). Option C uses wrong preposition ("of" instead of "in"). Option D changes the meaning entirely (hardest student TO work implies she\'s difficult to work with).',
+    gapType: 'superlative comparison',
+  },
+  {
+    id: 5,
+    sentence: 'Original: "\'Don\'t touch the exhibits,\' the guard told us."\nKey word: WARNED\n\nThe guard ___.',
+    options: [
+      { key: 'A', value: 'warned us not to touch the exhibits' },
+      { key: 'B', value: 'warned us to not touch the exhibits' },
+      { key: 'C', value: "warned that we don't touch the exhibits" },
+      { key: 'D', value: 'warned us about not touching the exhibits' },
+    ],
+    answer: 'A',
+    explanation: 'Reporting verb + infinitive: "warn sb not to do sth". The negative infinitive "not to touch" must keep "not" before "to" (split infinitive "to not touch" is non-standard in Cambridge). Option C uses wrong structure (warn + that clause requires would/should in formal writing). Option D changes the meaning nuance.',
+    gapType: 'reported speech',
+  },
+];
+
+const schemaLearningResource = {
+  "@context": "https://schema.org",
+  "@type": "LearningResource",
+  "name": "B2 First Use of English Part 4: Key Word Transformations — Complete Guide",
+  "description": "Master B2 First Key Word Transformations with the double-transformation method. Learn the 6 core structures, partial marking strategy, and practise with 5 interactive examples.",
+  "url": "https://theenglishhacker.com/practice/b2/use-of-english/part-4",
+  "educationalLevel": "B2",
+  "learningResourceType": ["Guide", "Practice"],
+  "teaches": "Cambridge B2 First Use of English Part 4 — Key Word Transformations",
+  "inLanguage": "en",
+  "provider": { "@type": "Organization", "name": "TheEnglishHacker", "url": "https://theenglishhacker.com" }
+};
+
+const schemaBreadcrumb = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://theenglishhacker.com" },
+    { "@type": "ListItem", "position": 2, "name": "B2 First", "item": "https://theenglishhacker.com/b2" },
+    { "@type": "ListItem", "position": 3, "name": "Use of English", "item": "https://theenglishhacker.com/b2" },
+    { "@type": "ListItem", "position": 4, "name": "Part 4 — Key Word Transformations", "item": "https://theenglishhacker.com/practice/b2/use-of-english/part-4" }
+  ]
+};
+
+const schemaFAQ = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How many words can I write in a B2 First Key Word Transformation?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Between 2 and 5 words, including the key word. Contractions count as two words (isn't = is + not = 2 words). Writing 1 word or 6+ words results in 0 marks for that question, regardless of accuracy." }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I change the key word in a B2 KWT question?",
+      "acceptedAnswer": { "@type": "Answer", "text": "No. The key word must appear in exactly the form given. You cannot change its tense, add prefixes or suffixes, or use a related form. Changing the key word results in automatic 0 for that question." }
+    },
+    {
+      "@type": "Question",
+      "name": "Is partial marking possible in B2 First Part 4?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes. Each transformation is marked out of 2 points, with 1 mark available for each half of the answer. Cambridge examiners assess the two halves independently, so an answer that's half-right still earns 1 mark. Always complete the sentence even if you're unsure — a half-correct answer is always better than leaving it blank." }
+    },
+    {
+      "@type": "Question",
+      "name": "What are the most common structures tested in B2 Part 4?",
+      "acceptedAnswer": { "@type": "Answer", "text": "The 6 structures that appear most frequently are: (1) modal perfect (must/might/can't have done), (2) causative have (have something done), (3) present perfect with since/for, (4) comparative and superlative transformations, (5) reported speech with reporting verbs, and (6) passive voice transformations. These account for roughly 70–80% of all B2 Part 4 questions." }
+    },
+    {
+      "@type": "Question",
+      "name": "Is B2 Part 4 the same as C1 Part 4?",
+      "acceptedAnswer": { "@type": "Answer", "text": "The format is identical (6 questions, 2 marks each, key word provided) but the difficulty is substantially different. C1 Part 4 introduces inversion structures (No sooner had..., Not until...), cleft sentences (It was...that), and complex conditional transformations that are entirely absent at B2 level. If you're aiming for C1, mastering B2 Part 4 first is the recommended progression." }
+    }
+  ]
+};
+---
+
+<BaseLayout
+  title="B2 First Key Word Transformations (Part 4): The Complete Strategy Guide"
+  description="Master B2 First Key Word Transformations with the double-transformation method. Every question tests two changes simultaneously — learn to spot both and never leave marks on the table."
+  ogImage="/logo-og.svg"
+>
+  <script type="application/ld+json" set:html={JSON.stringify(schemaLearningResource)} />
+  <script type="application/ld+json" set:html={JSON.stringify(schemaBreadcrumb)} />
+  <script type="application/ld+json" set:html={JSON.stringify(schemaFAQ)} />
+
+  <header class="border-b border-hacker-border px-4 py-3 text-xs text-hacker-dim overflow-x-auto">
+    <div class="flex items-center gap-4 min-w-max">
+      <a href="/" class="text-hacker-green hover:text-hacker-green-dim transition-colors">&gt;_ TheEnglishHacker</a>
+      <span>/</span>
+      <a href="/b2" class="hover:text-hacker-green transition-colors">[ B2_FIRST ]</a>
+      <span>/</span>
+      <span class="text-hacker-text">Use of English · Part 4</span>
+    </div>
+  </header>
+
+  <main class="max-w-3xl mx-auto px-4 py-12 space-y-16">
+
+    <!-- HERO -->
+    <section class="space-y-5">
+      <div class="text-xs text-hacker-dim">// PRACTICE_GUIDE · B2_FIRST · USE_OF_ENGLISH</div>
+      <h1 class="text-3xl font-bold text-hacker-text leading-tight">
+        Use of English — Part 4<br/>
+        <span class="text-hacker-green">Key Word Transformations</span>
+      </h1>
+      <div class="flex flex-wrap gap-4 text-xs font-mono">
+        <span class="border border-hacker-border px-3 py-1 text-hacker-dim">6 questions</span>
+        <span class="border border-hacker-border px-3 py-1 text-hacker-dim">12 marks</span>
+        <span class="border border-hacker-border px-3 py-1 text-hacker-dim">~15 min</span>
+        <span class="border border-hacker-green px-3 py-1 text-hacker-green">Difficulty: ★★★★★</span>
+        <span class="border border-hacker-border px-3 py-1 text-hacker-dim">~8 min read</span>
+      </div>
+      <p class="text-sm text-hacker-dim leading-relaxed">
+        The highest-stakes part of the B2 First paper — and the one where candidates consistently leave the most marks behind. Every question hides two transformations. Learn to spot both.
+      </p>
+    </section>
+
+    <!-- WHO THIS IS FOR -->
+    <section class="border border-hacker-border p-6 space-y-3">
+      <div class="text-xs text-hacker-dim">// WHO_THIS_IS_FOR</div>
+      <p class="text-sm text-hacker-text leading-relaxed">
+        If you understand B2 grammar but keep writing 6 words when the limit is 5, or you know the structure but lose the second mark because you miss the secondary transformation — this guide targets those exact failure points. It's also for candidates who avoid Part 4 in practice and hope to compensate elsewhere. <strong class="text-hacker-green">Don't.</strong> With 12 marks at stake (2 per question), Part 4 is the single highest-value target for score improvement in the entire Use of English paper.
+      </p>
+    </section>
+
+    <!-- WHAT IS THIS PART -->
+    <section class="space-y-6">
+      <div class="text-xs text-hacker-dim">// WHAT_IS_THIS_PART</div>
+      <h2 class="text-xl font-bold text-hacker-text">What exactly is Part 4?</h2>
+      <p class="text-sm text-hacker-dim leading-relaxed">
+        You are given a complete sentence and a <strong class="text-hacker-text">key word</strong> in capitals. Below is a second sentence with a gap. You must complete the second sentence so that it means the same as the first, using the key word. The key word cannot be changed in any way — not its tense, not its form, not anything. The completed gap must contain <strong class="text-hacker-text">between 2 and 5 words</strong>, including the key word.
+      </p>
+      <div class="border border-hacker-border p-4 space-y-3 font-mono text-xs">
+        <div class="text-hacker-dim">// EXAMPLE FORMAT</div>
+        <p class="text-hacker-text">She started working here three years ago.</p>
+        <p class="text-hacker-green font-bold">WORKING</p>
+        <p class="text-hacker-text">She has _______________________________ three years.</p>
+        <p class="text-hacker-dim mt-2">Answer: <span class="text-hacker-green">been working here for</span> (4 words, key word included)</p>
+      </div>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        {[
+          ['Questions', '6'],
+          ['Marks', '12 (2 per Q)'],
+          ['Words per gap', '2–5 incl. key word'],
+          ['Time allocation', '~15 min'],
+        ].map(([label, value]) => (
+          <div class="border border-hacker-border p-3 space-y-1">
+            <div class="text-xs text-hacker-dim">{label}</div>
+            <div class="text-sm font-bold text-hacker-green">{value}</div>
+          </div>
+        ))}
+      </div>
+      <div class="border-l-2 border-hacker-amber pl-4 text-sm text-hacker-dim leading-relaxed">
+        <strong class="text-hacker-text">Partial marking:</strong> Each question awards 2 marks, 1 for each half of the answer. Cambridge examiners assess both halves independently. An answer that's half correct still earns 1 mark — always complete the sentence.
+      </div>
+    </section>
+
+    <!-- WHAT'S ACTUALLY TESTED -->
+    <section class="space-y-6">
+      <div class="text-xs text-hacker-dim">// WHAT_IS_TESTED</div>
+      <h2 class="text-xl font-bold text-hacker-text">The double-transformation rule</h2>
+      <p class="text-sm text-hacker-dim leading-relaxed">
+        This is the single most important insight about Part 4 that most guides skip: <strong class="text-hacker-text">every question tests two changes simultaneously</strong>. The key word forces one change. A secondary transformation — grammatical or lexical — is always embedded alongside it. Students who only make one change typically score 1/2, not 2/2.
+      </p>
+      <div class="border border-hacker-border p-5 space-y-3 font-mono text-xs">
+        <div class="text-hacker-dim">// DOUBLE TRANSFORMATION EXAMPLE</div>
+        <p class="text-hacker-text">"They repaired the bridge last month." → KEY WORD: <span class="text-hacker-green">REPAIRED</span></p>
+        <p class="text-hacker-dim">Student who makes ONE change: "The bridge was repaired by them last month." ← 1/2</p>
+        <p class="text-hacker-green">Correct: "The bridge was repaired last month." ← 2/2</p>
+        <p class="text-hacker-dim mt-1">Two changes: passive voice + removal of unnecessary agent "by them"</p>
+      </div>
+      <p class="text-sm text-hacker-dim leading-relaxed">The 6 transformation types that account for the majority of Part 4 questions at B2:</p>
+      <div class="space-y-3">
+        {[
+          { n: '01', type: 'Modal perfect', ex: 'must/might/can\'t + have + past participle', note: 'Expresses deduction or possibility about a past event' },
+          { n: '02', type: 'Causative have/get', ex: 'have/get + object + past participle', note: 'Arranging for someone else to do something' },
+          { n: '03', type: 'Present perfect + since/for', ex: '"last did" → "hasn\'t done since"', note: 'Time expression conversion is the secondary change' },
+          { n: '04', type: 'Comparative transformation', ex: 'as...as / not as...as / less...than / the -est', note: 'Meaning must be exactly preserved across the transformation' },
+          { n: '05', type: 'Reported speech with reporting verbs', ex: 'warned/refused/suggested/offered + correct structure', note: 'Each reporting verb requires a specific grammatical pattern' },
+          { n: '06', type: 'Passive transformation', ex: 'Active → passive or passive → active', note: 'Often combined with modal or tense change as secondary transformation' },
+        ].map(item => (
+          <div class="border border-hacker-border p-4 grid grid-cols-[32px_1fr] gap-4">
+            <div class="text-hacker-green font-bold text-xs font-mono pt-1">{item.n}</div>
+            <div>
+              <div class="text-sm font-bold text-hacker-text">{item.type}</div>
+              <div class="text-xs text-hacker-green font-mono mt-1">{item.ex}</div>
+              <div class="text-xs text-hacker-dim mt-1">{item.note}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- STRATEGIES -->
+    <section class="space-y-6">
+      <div class="text-xs text-hacker-dim">// STRATEGIES</div>
+      <h2 class="text-xl font-bold text-hacker-text">5 strategies for Part 4</h2>
+      <div class="space-y-5">
+        <div class="border-l-2 border-hacker-green pl-5 space-y-2">
+          <div class="text-xs text-hacker-dim">STRATEGY_01</div>
+          <h3 class="text-sm font-bold text-hacker-text">Read the key word first — it tells you the structure</h3>
+          <p class="text-xs text-hacker-dim leading-relaxed">The key word is never random. Cambridge chooses it because it forces a specific grammatical construction. Before reading the full sentences, look at the key word and ask: "What structure does this word belong to?" MADE → causative or past simple? BEEN → passive or present perfect? SINCE → present perfect with time marker. This 5-second classification narrows your transformation approach before you've even read the sentences.</p>
+        </div>
+        <div class="border-l-2 border-hacker-green pl-5 space-y-2">
+          <div class="text-xs text-hacker-dim">STRATEGY_02</div>
+          <h3 class="text-sm font-bold text-hacker-text">Hunt for both transformations before writing</h3>
+          <p class="text-xs text-hacker-dim leading-relaxed">Once you've identified the primary transformation (the one the key word forces), actively look for the secondary one. Compare the first and second sentences carefully: what else changes between them? A time expression? A pronoun? A negation? The agent in a passive? Writing your answer before identifying both changes is the most expensive mistake in Part 4.</p>
+        </div>
+        <div class="border-l-2 border-hacker-green pl-5 space-y-2">
+          <div class="text-xs text-hacker-dim">STRATEGY_03</div>
+          <h3 class="text-sm font-bold text-hacker-text">Count words — every time, without exception</h3>
+          <p class="text-xs text-hacker-dim leading-relaxed">2–5 words including the key word. Contractions count as two (can't = can + not = 2 words). This rule is absolute: 6+ words = 0 marks regardless of grammatical accuracy. After writing your answer, count with your finger. Candidates who skip this step lose marks they correctly earned on the grammar.</p>
+        </div>
+        <div class="border-l-2 border-hacker-green pl-5 space-y-2">
+          <div class="text-xs text-hacker-dim">STRATEGY_04</div>
+          <h3 class="text-sm font-bold text-hacker-text">Verify meaning equivalence — not just grammatical correctness</h3>
+          <p class="text-xs text-hacker-dim leading-relaxed">Your transformed sentence must mean exactly the same as the original. A grammatically perfect sentence that shifts the meaning earns 0. After writing your answer, read both sentences together and ask: "Does this mean the same thing?" Pay particular attention to negation (not reversing it), time reference (present vs past), and degree (comparative values preserved).</p>
+        </div>
+        <div class="border-l-2 border-hacker-green pl-5 space-y-2">
+          <div class="text-xs text-hacker-dim">STRATEGY_05</div>
+          <h3 class="text-sm font-bold text-hacker-text">Always write something — even if uncertain</h3>
+          <p class="text-xs text-hacker-dim leading-relaxed">Partial marking means a half-right answer earns 1 mark. If you're unsure of the complete transformation, write what you know: include the key word in a grammatical context, complete the second sentence meaningfully, and you have a real chance of earning partial credit. Leaving it blank guarantees 0. A reasonable attempt at 5/6 questions beats a perfect 4/6 in nearly every scenario.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMMON MISTAKES -->
+    <section class="space-y-6">
+      <div class="text-xs text-hacker-dim">// COMMON_MISTAKES</div>
+      <h2 class="text-xl font-bold text-hacker-text">3 mistakes that cost candidates marks</h2>
+      <div class="space-y-4">
+        {[
+          {
+            n: '01', color: 'text-hacker-red',
+            title: 'Changing the key word',
+            body: 'The single most costly error in Part 4 — and one that cannot be recovered through partial marking. Students under time pressure change verb tenses, add prefixes, or use a related form. "MAKE" becomes "made" or "making" or "makes". The instruction is unambiguous: the key word must appear exactly as printed. Build in a final check specifically for this.',
+          },
+          {
+            n: '02', color: 'text-hacker-red',
+            title: 'Writing exactly 6 words',
+            body: 'The upper limit of 5 words is the most frequently violated rule in Part 4. Students who write a grammatically correct 6-word answer earn 0. This happens most often on modal perfect questions ("must not have been told") where candidates include an unnecessary "been" or article. Count every time.',
+          },
+          {
+            n: '03', color: 'text-hacker-red',
+            title: 'Solving only the primary transformation',
+            body: 'Missing the secondary transformation is the difference between 1/2 and 2/2 on every question. Cambridge specifically designs questions so that the "obvious" transformation — the one the key word makes unmistakeable — only earns partial credit. The second mark requires noticing what else changes: a time expression, a negation, an agent removed from a passive, a preposition changed by a reporting verb.',
+          },
+        ].map(item => (
+          <div class="border border-hacker-border p-5 grid grid-cols-[32px_1fr] gap-4">
+            <div class={`font-bold text-sm font-mono ${item.color}`}>{item.n}</div>
+            <div>
+              <div class="text-sm font-bold text-hacker-text mb-2">{item.title}</div>
+              <p class="text-xs text-hacker-dim leading-relaxed">{item.body}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- EXAMPLES -->
+    <section class="space-y-6">
+      <div class="text-xs text-hacker-dim">// REAL_FORMAT_EXAMPLES</div>
+      <h2 class="text-xl font-bold text-hacker-text">6 annotated examples</h2>
+      <p class="text-xs text-hacker-dim">Each example identifies both transformations — primary and secondary.</p>
+      <div class="space-y-5">
+        {[
+          {
+            n: '01', kw: 'MIGHT',
+            s1: '"It is possible that she left before we arrived."',
+            s2: 'She ___ before we arrived.',
+            ans: 'might have left',
+            t1: 'Primary: modal perfect (possible past event)',
+            t2: 'Secondary: tense shift (present → past possibility)',
+          },
+          {
+            n: '02', kw: 'HAD',
+            s1: '"A mechanic repaired our car at the garage."',
+            s2: 'We ___ at the garage.',
+            ans: 'had our car repaired',
+            t1: 'Primary: causative have (have + object + past participle)',
+            t2: 'Secondary: agent removed (mechanic disappears from the sentence)',
+          },
+          {
+            n: '03', kw: 'SPOKEN',
+            s1: '"She last spoke to her mother on Tuesday."',
+            s2: 'She ___ her mother since Tuesday.',
+            ans: "hasn't spoken to",
+            t1: "Primary: present perfect + since (hasn't + past participle)",
+            t2: 'Secondary: affirmative → negative (last spoke → hasn\'t spoken)',
+          },
+          {
+            n: '04', kw: 'HARDEST',
+            s1: '"No other student in the class works as hard as Maria."',
+            s2: 'Maria ___.',
+            ans: 'is the hardest-working student in the class',
+            t1: 'Primary: superlative (hardest-working)',
+            t2: 'Secondary: verb → adjective nominalization (works hard → hardest-working)',
+          },
+          {
+            n: '05', kw: 'WARNED',
+            s1: '"\'Don\'t touch the exhibits,\' the guard told us."',
+            s2: 'The guard ___.',
+            ans: 'warned us not to touch the exhibits',
+            t1: 'Primary: reporting verb + infinitive (warn sb not to do)',
+            t2: 'Secondary: direct → indirect speech (imperative → infinitive)',
+          },
+          {
+            n: '06', kw: 'UNLESS',
+            s1: '"You won\'t get a refund if you don\'t have a receipt."',
+            s2: 'You won\'t get a refund ___.',
+            ans: 'unless you have a receipt',
+            t1: 'Primary: conditional connector (unless = if not)',
+            t2: 'Secondary: double negative removed (don\'t have → have, with negation carried by "unless")',
+          },
+        ].map(ex => (
+          <div class="border border-hacker-border p-5 space-y-3">
+            <div class="flex gap-3 text-xs">
+              <span class="text-hacker-dim">Example {ex.n}</span>
+              <span class="text-hacker-green font-bold">[{ex.kw}]</span>
+            </div>
+            <div class="font-mono text-xs space-y-1">
+              <p class="text-hacker-dim">{ex.s1}</p>
+              <p class="text-hacker-text">{ex.s2}</p>
+            </div>
+            <div class="border-t border-hacker-border pt-3 space-y-2">
+              <p class="text-xs font-bold text-hacker-green">&gt;_ Answer: "{ex.ans}"</p>
+              <p class="text-xs text-hacker-dim">{ex.t1}</p>
+              <p class="text-xs text-hacker-amber">{ex.t2}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- MINI QUIZ -->
+    <section class="space-y-6">
+      <div class="text-xs text-hacker-dim">// PRACTICE_QUIZ</div>
+      <h2 class="text-xl font-bold text-hacker-text">Practice quiz — choose the correct transformation</h2>
+      <p class="text-xs text-hacker-dim">Select the correctly completed second sentence. One option has too many words, one changes the key word, and one makes only the primary transformation. Find the answer that nails both.</p>
+      <MiniQuiz client:load questions={quizQuestions} />
+    </section>
+
+    <!-- FAQ -->
+    <section class="space-y-6">
+      <div class="text-xs text-hacker-dim">// FAQ</div>
+      <h2 class="text-xl font-bold text-hacker-text">Frequently asked questions</h2>
+      <div class="space-y-4">
+        {[
+          { q: 'How many words can I write in a B2 First Key Word Transformation?', a: 'Between 2 and 5 words, including the key word. Contractions count as two words (isn\'t = is + not = 2 words). Writing 1 word or 6+ words results in 0 marks for that question, regardless of accuracy.' },
+          { q: 'Can I change the key word?', a: 'No. The key word must appear in exactly the form given. You cannot change its tense, add prefixes or suffixes, or use a related form. Changing the key word results in automatic 0 for that question — no partial credit is possible.' },
+          { q: 'Is partial marking possible in B2 Part 4?', a: 'Yes. Each transformation is marked out of 2 points, with 1 mark available for each half of the answer. Cambridge examiners assess the two halves independently, so an answer that\'s half-right still earns 1 mark. Always complete the sentence even if you\'re unsure.' },
+          { q: 'What are the most common structures in B2 Part 4?', a: 'The 6 that appear most frequently: (1) modal perfect, (2) causative have, (3) present perfect with since/for, (4) comparative and superlative transformations, (5) reported speech with specific reporting verbs, and (6) passive voice transformations. These account for roughly 70–80% of all B2 Part 4 questions.' },
+          { q: 'Is B2 Part 4 the same as C1 Part 4?', a: 'The format is identical (6 questions, 2 marks each) but the difficulty is substantially different. C1 Part 4 introduces inversion structures (No sooner had..., Not until...), cleft sentences (It was...that), and complex conditional forms that are entirely absent at B2 level. Mastering B2 Part 4 first is the recommended progression.' },
+        ].map(item => (
+          <details class="border border-hacker-border group">
+            <summary class="px-5 py-4 text-sm font-bold text-hacker-text cursor-pointer flex items-center justify-between list-none hover:text-hacker-green transition-colors">
+              <span>{item.q}</span>
+              <span class="text-hacker-green font-mono text-xs ml-4 shrink-0 group-open:rotate-90 transition-transform">&gt;</span>
+            </summary>
+            <div class="px-5 pb-4 text-xs text-hacker-dim leading-relaxed border-t border-hacker-border pt-3">{item.a}</div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <!-- COMPARE TABLE -->
+    <section class="space-y-6">
+      <div class="text-xs text-hacker-dim">// COMPARE_WITH_OTHER_PARTS</div>
+      <h2 class="text-xl font-bold text-hacker-text">How Part 4 compares to the other Use of English parts</h2>
+      <div class="overflow-x-auto">
+        <table class="w-full text-xs font-mono border-collapse">
+          <thead>
+            <tr class="border-b border-hacker-border">
+              <th class="text-left py-3 pr-4 text-hacker-green font-bold">Part</th>
+              <th class="text-left py-3 pr-4 text-hacker-dim font-normal">Format</th>
+              <th class="text-left py-3 pr-4 text-hacker-dim font-normal">Marks</th>
+              <th class="text-left py-3 pr-4 text-hacker-dim font-normal">Per Q</th>
+              <th class="text-left py-3 text-hacker-dim font-normal">Difficulty</th>
+            </tr>
+          </thead>
+          <tbody>
+            {[
+              { part: 'Part 1 · Multiple Choice Cloze', format: '8 gaps · choose A/B/C/D', marks: '8', perQ: '1 mark', diff: '★★★☆☆', current: false },
+              { part: 'Part 2 · Open Cloze', format: '8 gaps · no options', marks: '8', perQ: '1 mark', diff: '★★★★☆', current: false },
+              { part: 'Part 3 · Word Formation', format: '8 gaps · root word given', marks: '8', perQ: '1 mark', diff: '★★★☆☆', current: false },
+              { part: 'Part 4 · Key Word Transformations', format: '6 sentences · key word', marks: '12', perQ: '2 marks', diff: '★★★★★', current: true },
+            ].map(row => (
+              <tr class={`border-b border-hacker-border ${row.current ? 'bg-hacker-green/5' : ''}`}>
+                <td class={`py-3 pr-4 font-bold ${row.current ? 'text-hacker-green' : 'text-hacker-text'}`}>{row.part}</td>
+                <td class="py-3 pr-4 text-hacker-dim">{row.format}</td>
+                <td class="py-3 pr-4 text-hacker-dim">{row.marks}</td>
+                <td class={`py-3 pr-4 ${row.current ? 'text-hacker-green font-bold' : 'text-hacker-dim'}`}>{row.perQ}</td>
+                <td class="py-3 text-hacker-amber">{row.diff}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="text-xs text-hacker-dim">Part 4 is the only part with 2 marks per question — and the only part where partial credit is available. This makes it both the highest-risk and the highest-reward part of the Use of English paper.</p>
+    </section>
+
+    <!-- CTA -->
+    <section class="border border-hacker-green p-6 space-y-5">
+      <div class="text-xs text-hacker-dim">// NEXT_STEPS</div>
+      <h2 class="text-lg font-bold text-hacker-text">Practice Part 4 in full exam conditions</h2>
+      <p class="text-xs text-hacker-dim leading-relaxed">The free demo at /b2 is a Part 1 Multiple Choice Cloze exercise. The 5 full B2 First exams in the complete pack include all 7 parts of the exam — including Part 4 Key Word Transformations with full answer keys and transformation-by-transformation explanations.</p>
+      <div class="flex flex-col sm:flex-row gap-3">
+        <a href="/b2" class="border border-hacker-green text-hacker-green px-6 py-3 text-sm font-bold hover:bg-hacker-green hover:text-hacker-bg transition-colors text-center">&gt;_ Try the free B2 demo</a>
+        <a href={unlockUrl} class="bg-hacker-green text-hacker-bg px-6 py-3 text-sm font-bold hover:bg-hacker-green-dim transition-colors text-center">&gt;_ Unlock 5 full exams — 7€</a>
+      </div>
+    </section>
+
+    <nav class="border-t border-hacker-border pt-6 space-y-3">
+      <div class="text-xs text-hacker-dim">// RELATED_PRACTICE_GUIDES</div>
+      <div class="flex flex-col gap-2 text-xs font-mono">
+        <a href="/practice/b2/use-of-english/part-1" class="text-hacker-green hover:text-hacker-green-dim transition-colors">→ B2 Use of English Part 1 — Multiple Choice Cloze</a>
+        <a href="/practice/c1/use-of-english/part-4" class="text-hacker-dim hover:text-hacker-green transition-colors">→ C1 Advanced Key Word Transformations (harder version)</a>
+        <a href="/practice/c1/use-of-english/part-1" class="text-hacker-dim hover:text-hacker-green transition-colors">→ C1 Advanced Use of English Part 1</a>
+        <a href="/practice/c1/reading/part-6" class="text-hacker-dim hover:text-hacker-green transition-colors">→ C1 Cross-text Multiple Matching</a>
+      </div>
+    </nav>
+
+  </main>
+
+  <footer class="border-t border-hacker-border px-6 py-6 mt-4 text-xs text-hacker-dim">
+    <div class="max-w-3xl mx-auto flex flex-wrap justify-between gap-4">
+      <a href="/b2" class="hover:text-hacker-green transition-colors">← Back to B2 First</a>
+      <span>&copy; {new Date().getFullYear()} TheEnglishHacker.com</span>
+    </div>
+  </footer>
+</BaseLayout>
