@@ -1,0 +1,459 @@
+---
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import MiniQuiz from '../../../../components/practice/MiniQuiz';
+import type { QuizQuestion } from '../../../../components/practice/MiniQuiz';
+
+const unlockUrl = import.meta.env.STRIPE_C1_URL ?? '/unlock';
+
+const quizQuestions: QuizQuestion[] = [
+  {
+    id: 1,
+    sentence: "The committee's decision to postpone the vote ___ widespread criticism from opposition parties.",
+    options: [
+      { key: 'A', value: 'attracted' },
+      { key: 'B', value: 'gained' },
+      { key: 'C', value: 'earned' },
+      { key: 'D', value: 'received' },
+    ],
+    answer: 'A',
+    explanation: '"Attract criticism" is the established formal collocation in academic and journalistic register. "Gain criticism" and "earn criticism" do not collocate at C1 level. "Receive criticism" is plausible but less idiomatic — "attract" implies the criticism was drawn naturally, which fits the context. At C1, Cambridge frequently tests formal-register collocations that only advanced learners control.',
+    gapType: 'formal collocation',
+  },
+  {
+    id: 2,
+    sentence: "The report failed to ___ into account the long-term environmental consequences of the proposed development.",
+    options: [
+      { key: 'A', value: 'bring' },
+      { key: 'B', value: 'take' },
+      { key: 'C', value: 'put' },
+      { key: 'D', value: 'call' },
+    ],
+    answer: 'B',
+    explanation: '"Take into account" is the fixed expression meaning "to consider". "Bring into account" is non-standard. "Put into account" does not exist as an expression. "Call into account" is confused with "call into question" — a Cambridge distractor designed to catch candidates who know one expression but conflate it with another.',
+    gapType: 'fixed expression',
+  },
+  {
+    id: 3,
+    sentence: "Her early research ___ the foundation for decades of subsequent work in the field of neuroplasticity.",
+    options: [
+      { key: 'A', value: 'set' },
+      { key: 'B', value: 'built' },
+      { key: 'C', value: 'laid' },
+      { key: 'D', value: 'placed' },
+    ],
+    answer: 'C',
+    explanation: '"Lay the foundation" is the correct collocation — both literal and figurative. "Set the foundation" is non-standard (confusable with "set the groundwork"). "Build the foundation" is logical but not idiomatic in formal English. "Place the foundation" doesn\'t exist. This is a classic C1 trap: all options are plausible verbs about construction, but only one collocates with "foundation" in academic prose.',
+    gapType: 'academic collocation',
+  },
+  {
+    id: 4,
+    sentence: "The council approved the scheme ___ to the mayor's insistence on an independent environmental audit.",
+    options: [
+      { key: 'A', value: 'subject' },
+      { key: 'B', value: 'owing' },
+      { key: 'C', value: 'due' },
+      { key: 'D', value: 'according' },
+    ],
+    answer: 'A',
+    explanation: '"Subject to" means "on the condition that" — so the scheme was approved conditionally. "Owing to" and "due to" both mean "because of" — they express cause, not condition, which changes the sentence\'s meaning. "According to" introduces a source, not a condition. Register matters here: "subject to" is a formal/legal expression that C1 tests specifically because it\'s often confused with causal connectors.',
+    gapType: 'register — formal connector',
+  },
+  {
+    id: 5,
+    sentence: "The author ___ a compelling case for rethinking our assumptions about economic growth.",
+    options: [
+      { key: 'A', value: 'does' },
+      { key: 'B', value: 'makes' },
+      { key: 'C', value: 'creates' },
+      { key: 'D', value: 'builds' },
+    ],
+    answer: 'B',
+    explanation: '"Make a case" is the academic collocation meaning to present an argument. "Do a case" is grammatically impossible in this construction. "Create a case" confuses it with "create an argument" — plausible but not the established phrase. "Build a case" exists in legal contexts but is less common in academic/literary register, which the sentence\'s formal tone signals. C1 candidates must read register clues from the surrounding sentence.',
+    gapType: 'collocation + register',
+  },
+];
+
+const schemaLearningResource = {
+  "@context": "https://schema.org",
+  "@type": "LearningResource",
+  "name": "C1 Advanced Use of English Part 1: Multiple Choice Cloze — Complete Guide",
+  "description": "Master C1 Advanced Use of English Part 1 with the register-first approach. Learn how C1 gaps differ from B2, the 4 gap types at advanced level, and practise with 5 C1-calibrated examples.",
+  "url": "https://theenglishhacker.com/practice/c1/use-of-english/part-1",
+  "educationalLevel": "C1",
+  "learningResourceType": ["Guide", "Practice"],
+  "teaches": "Cambridge C1 Advanced Use of English Part 1 — Multiple Choice Cloze",
+  "inLanguage": "en",
+  "provider": { "@type": "Organization", "name": "TheEnglishHacker", "url": "https://theenglishhacker.com" }
+};
+
+const schemaBreadcrumb = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://theenglishhacker.com" },
+    { "@type": "ListItem", "position": 2, "name": "C1 Advanced", "item": "https://theenglishhacker.com/c1" },
+    { "@type": "ListItem", "position": 3, "name": "Use of English", "item": "https://theenglishhacker.com/c1" },
+    { "@type": "ListItem", "position": 4, "name": "Part 1 — Multiple Choice Cloze", "item": "https://theenglishhacker.com/practice/c1/use-of-english/part-1" }
+  ]
+};
+
+const schemaFAQ = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How is C1 Advanced Part 1 different from B2 First Part 1?",
+      "acceptedAnswer": { "@type": "Answer", "text": "The format is identical (8 gaps, 4 options each), but C1 gaps operate at a fundamentally different level. Where B2 tests common collocations and phrasal verbs, C1 tests formal-register collocations, academic fixed expressions, and vocabulary distinctions that require sophisticated understanding of register. The distractors at C1 are semantically closer — often the difference between two near-synonyms is a single register marker." }
+    },
+    {
+      "@type": "Question",
+      "name": "Do I need to know academic vocabulary for C1 Part 1?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes, to a significant degree. C1 Part 1 texts frequently come from formal or semi-formal sources — journalism, academic writing, cultural commentary. Approximately 40–50% of gaps test formal or academic collocations that are rarely encountered in everyday speech. Reading authentic English from quality publications (The Economist, The Guardian long-form, academic abstracts) is the most efficient preparation." }
+    },
+    {
+      "@type": "Question",
+      "name": "What percentage of C1 Part 1 gaps test collocations vs other types?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Collocations remain the dominant gap type at approximately 50%, consistent with B2. However, at C1 the collocations tested are formal/academic rather than everyday. Fixed expressions account for roughly 20–25%, and at C1 level these are predominantly formal idioms and set phrases from educated written English. Register-based gaps (where you must distinguish formal from informal) account for an additional 15–20% — this is essentially absent at B2." }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I use the same strategies from B2 Part 1 for C1 Part 1?",
+      "acceptedAnswer": { "@type": "Answer", "text": "The core strategies transfer — classifying the gap type, reading for surrounding collocation signals, testing connector grammar. What changes is the sophistication of application. At C1, you must additionally analyse the register of the surrounding text before selecting an option. Two options may both be grammatically correct collocations, but only one matches the formal or informal register of the text." }
+    },
+    {
+      "@type": "Question",
+      "name": "Is it possible to get full marks on C1 Part 1 without native-like English?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes, and many top C1 scorers are non-native speakers. C1 Part 1 rewards systematic preparation — learning formal collocations as units, reading in the register Cambridge tests, and applying gap-type analysis. Native intuition can actually be a disadvantage if it leads to choosing informal collocations in formal contexts. Non-native learners who study Cambridge-specific vocabulary patterns consistently outscore native speakers who rely on instinct." }
+    }
+  ]
+};
+---
+
+<BaseLayout
+  title="C1 Advanced Use of English Part 1: The Register-First Approach"
+  description="C1 Advanced Part 1 isn't just harder vocabulary — it's a register test. Learn the 4 gap types at C1 level, the formal collocation patterns Cambridge targets, and practise with 5 C1-calibrated examples."
+  ogImage="/logo-og.svg"
+>
+  <script type="application/ld+json" set:html={JSON.stringify(schemaLearningResource)} />
+  <script type="application/ld+json" set:html={JSON.stringify(schemaBreadcrumb)} />
+  <script type="application/ld+json" set:html={JSON.stringify(schemaFAQ)} />
+
+  <header class="border-b border-hacker-border px-4 py-3 text-xs text-hacker-dim overflow-x-auto">
+    <div class="flex items-center gap-4 min-w-max">
+      <a href="/" class="text-hacker-green hover:text-hacker-green-dim transition-colors">&gt;_ TheEnglishHacker</a>
+      <span>/</span>
+      <a href="/c1" class="hover:text-hacker-green transition-colors">[ C1_ADVANCED ]</a>
+      <span>/</span>
+      <span class="text-hacker-text">Use of English · Part 1</span>
+    </div>
+  </header>
+
+  <main class="max-w-3xl mx-auto px-4 py-12 space-y-16">
+
+    <!-- HERO -->
+    <section class="space-y-5">
+      <div class="text-xs text-hacker-dim">// PRACTICE_GUIDE · C1_ADVANCED · USE_OF_ENGLISH</div>
+      <h1 class="text-3xl font-bold text-hacker-text leading-tight">
+        Use of English — Part 1<br/>
+        <span class="text-hacker-green">Multiple Choice Cloze</span>
+      </h1>
+      <div class="flex flex-wrap gap-4 text-xs font-mono">
+        <span class="border border-hacker-border px-3 py-1 text-hacker-dim">8 questions</span>
+        <span class="border border-hacker-border px-3 py-1 text-hacker-dim">8 marks</span>
+        <span class="border border-hacker-border px-3 py-1 text-hacker-dim">~10 min</span>
+        <span class="border border-hacker-green px-3 py-1 text-hacker-green">Difficulty: ★★★★☆</span>
+        <span class="border border-hacker-border px-3 py-1 text-hacker-dim">~7 min read</span>
+      </div>
+      <p class="text-sm text-hacker-dim leading-relaxed">
+        The format is the same as B2 Part 1. The game is completely different. At C1, two options are often <em>both</em> grammatically correct collocations — the deciding factor is register. This guide teaches you to read the room before you read the options.
+      </p>
+    </section>
+
+    <!-- WHO THIS IS FOR -->
+    <section class="border border-hacker-border p-6 space-y-3">
+      <div class="text-xs text-hacker-dim">// WHO_THIS_IS_FOR</div>
+      <p class="text-sm text-hacker-text leading-relaxed">
+        If you've passed B2 and are now preparing for C1, or if you're scoring 5–6/8 on Part 1 but can't consistently reach 7–8, this guide targets the specific C1 competency that B2 preparation doesn't build: <strong class="text-hacker-green">register discrimination</strong>. The ability to distinguish between formal, neutral, and informal collocations — and match them to the text's register — is what separates C1 candidates from B2 candidates on this part.
+      </p>
+    </section>
+
+    <!-- WHAT IS THIS PART -->
+    <section class="space-y-6">
+      <div class="text-xs text-hacker-dim">// WHAT_IS_THIS_PART</div>
+      <h2 class="text-xl font-bold text-hacker-text">What exactly is Part 1 at C1?</h2>
+      <p class="text-sm text-hacker-dim leading-relaxed">
+        The format mirrors B2 exactly: a text of approximately 150–175 words with 8 gaps, each offering four options (A, B, C, D). 1 mark per correct answer, no negative marking. The Reading and Use of English paper at C1 is 90 minutes (15 minutes longer than B2), covering 8 parts instead of 7. The additional time reflects the significantly greater text complexity.
+      </p>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        {[
+          ['Questions', '8'],
+          ['Marks', '8 (1 per Q)'],
+          ['Paper length', '90 min (C1) vs 75 min (B2)'],
+          ['Text length', '~175 words'],
+        ].map(([label, value]) => (
+          <div class="border border-hacker-border p-3 space-y-1">
+            <div class="text-xs text-hacker-dim">{label}</div>
+            <div class="text-sm font-bold text-hacker-green">{value}</div>
+          </div>
+        ))}
+      </div>
+      <div class="border border-hacker-amber/40 p-4 text-sm text-hacker-dim leading-relaxed">
+        <strong class="text-hacker-amber">B2 → C1 jump:</strong> The most significant change from B2 to C1 Part 1 is not vocabulary difficulty but option proximity. At B2, the four options are distinguishable by basic semantic or grammatical knowledge. At C1, Cambridge regularly presents two options that are both correct collocations in everyday English — the correct answer is determined by formal register, academic convention, or subtle meaning distinction.
+      </div>
+    </section>
+
+    <!-- WHAT'S TESTED -->
+    <section class="space-y-6">
+      <div class="text-xs text-hacker-dim">// WHAT_IS_TESTED</div>
+      <h2 class="text-xl font-bold text-hacker-text">What's tested at C1 that isn't tested at B2</h2>
+      <div class="space-y-4">
+        {[
+          {
+            pct: '~50%', type: 'Formal-register collocations',
+            desc: 'The collocations tested at C1 come predominantly from formal written English: academic prose, quality journalism, official reports. Where B2 tests "make a decision", C1 tests "attract criticism", "yield results", "sustain an argument", "address a concern". Candidates prepared on everyday collocations will consistently miss these gaps.',
+          },
+          {
+            pct: '~20%', type: 'Academic fixed expressions',
+            desc: 'Set phrases from educated written English: "subject to", "in light of", "lay the groundwork", "take into account", "on the grounds that". At B2, fixed expressions were everyday idioms ("by chance", "on purpose"). At C1, they\'re the stock phrases of formal discourse — the kind found in reports, analyses, and argument-based writing.',
+          },
+          {
+            pct: '~15%', type: 'Register discrimination',
+            desc: 'Unique to C1: gaps where two options are collocationally correct, but one is informal and the other formal. The text\'s register determines the answer. A text from an academic article requires "commence" not "start", "endeavour" not "try", "facilitate" not "help". Cambridge tests whether candidates have internalised this distinction — not just learned individual words.',
+          },
+          {
+            pct: '~15%', type: 'Phrasal verbs with abstract meaning',
+            desc: 'At B2, phrasal verbs were largely concrete in meaning (call off = cancel). At C1, Cambridge tests phrasal verbs used abstractly or idiomatically in formal contexts: "give rise to", "bring about", "bear out" (= confirm). These are semantically richer and require understanding the phrasal verb\'s figurative meaning in a specific context.',
+          },
+        ].map(item => (
+          <div class="border border-hacker-border p-4 grid grid-cols-[48px_1fr] gap-4">
+            <div class="text-hacker-green font-bold text-sm font-mono pt-1">{item.pct}</div>
+            <div>
+              <div class="text-sm font-bold text-hacker-text mb-1">{item.type}</div>
+              <p class="text-xs text-hacker-dim leading-relaxed">{item.desc}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- STRATEGIES -->
+    <section class="space-y-6">
+      <div class="text-xs text-hacker-dim">// STRATEGIES</div>
+      <h2 class="text-xl font-bold text-hacker-text">5 strategies for C1 Part 1</h2>
+      <div class="space-y-5">
+        <div class="border-l-2 border-hacker-green pl-5 space-y-2">
+          <div class="text-xs text-hacker-dim">STRATEGY_01</div>
+          <h3 class="text-sm font-bold text-hacker-text">Diagnose the register before reading the options</h3>
+          <p class="text-xs text-hacker-dim leading-relaxed">Read the text's title (if given) and first two sentences before engaging with any gap. Ask: "What register is this text written in?" Academic? Journalistic? Formal professional? This 20-second step primes you to reject informal options that B2-level instinct might find acceptable. A gap in an academic text rules out casual collocations even if they're grammatically perfect.</p>
+        </div>
+        <div class="border-l-2 border-hacker-green pl-5 space-y-2">
+          <div class="text-xs text-hacker-dim">STRATEGY_02</div>
+          <h3 class="text-sm font-bold text-hacker-text">When two options both collocate, the less common one is usually right</h3>
+          <p class="text-xs text-hacker-dim leading-relaxed">Cambridge builds C1 distractors specifically to trap candidates who know "enough" vocabulary. If both B and C seem like valid collocations, ask: "Which one is more formal? Which one do I encounter in reading, not in speech?" At C1, the correct answer is frequently the option that sounds slightly more elevated or precise — not more complicated, but more specifically appropriate to the context.</p>
+        </div>
+        <div class="border-l-2 border-hacker-green pl-5 space-y-2">
+          <div class="text-xs text-hacker-dim">STRATEGY_03</div>
+          <h3 class="text-sm font-bold text-hacker-text">Test fixed expressions as complete units including prepositions</h3>
+          <p class="text-xs text-hacker-dim leading-relaxed">C1 fixed expressions are often gapped at the preposition or particle — the least "obvious" part. "Take ___ account" (into), "___ the grounds that" (on), "subject ___" (to). Learn these expressions complete — not just the content words. The preposition is what Cambridge gaps because it's the element that doesn't follow predictable rules.</p>
+        </div>
+        <div class="border-l-2 border-hacker-green pl-5 space-y-2">
+          <div class="text-xs text-hacker-dim">STRATEGY_04</div>
+          <h3 class="text-sm font-bold text-hacker-text">Extend your collocation awareness beyond nouns — target verb phrases</h3>
+          <p class="text-xs text-hacker-dim leading-relaxed">B2 preparation focuses heavily on adjective+noun and verb+noun collocations. At C1, Cambridge significantly increases verb+noun collocations in formal contexts: "sustain an argument", "yield a result", "bridge a gap", "merit consideration", "warrant investigation". These are formal verbs paired with academic nouns — a pattern that appears in almost every C1 Part 1 text.</p>
+        </div>
+        <div class="border-l-2 border-hacker-green pl-5 space-y-2">
+          <div class="text-xs text-hacker-dim">STRATEGY_05</div>
+          <h3 class="text-sm font-bold text-hacker-text">Build a C1 collocation bank from authentic reading</h3>
+          <p class="text-xs text-hacker-dim leading-relaxed">No vocabulary list will cover every collocation Cambridge can test. The most efficient preparation is reading authentic English in the register Cambridge uses: The Economist (leader articles), The Guardian (long-form features), Cambridge academic papers, quality museum catalogue texts. When you encounter a verb+noun or adjective+noun pair you haven't seen before, record it as a unit — not the individual words.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMMON MISTAKES -->
+    <section class="space-y-6">
+      <div class="text-xs text-hacker-dim">// COMMON_MISTAKES</div>
+      <h2 class="text-xl font-bold text-hacker-text">3 mistakes C1 candidates make on Part 1</h2>
+      <div class="space-y-4">
+        {[
+          {
+            n: '01',
+            title: 'Applying B2 strategies without C1 calibration',
+            body: 'The most common mistake for candidates moving from B2 to C1: using the "sounds right" heuristic trained on everyday English. At C1, "sounds right" often means "sounds informal" — which is precisely the distractor Cambridge places. The strategy of testing each option against the surrounding words is still valid, but it must be augmented by register awareness. B2 pass → C1 failure on Part 1 is almost always a register problem, not a vocabulary size problem.',
+          },
+          {
+            n: '02',
+            title: 'Confusing formal synonyms with identical collocations',
+            body: 'Students who have learned that "commence" and "begin" mean the same thing, or that "endeavour" and "try" are synonyms, sometimes use this knowledge to eliminate options — but reach the wrong conclusion. At C1, two synonymous words may both be "correct" in isolation but only one collocates with the specific noun or preposition in the gap. "Conduct research" and "carry out research" are both correct — but "conduct" collocates with "audit" while "carry out" does not (in formal academic prose).',
+          },
+          {
+            n: '03',
+            title: 'Skipping the text title and source',
+            body: 'When Cambridge provides a text title, topic label, or source identifier (e.g., "adapted from an academic review"), this is register data. A text identified as a "scientific journal abstract" signals formal academic register throughout — even before you read the first word. Candidates who ignore this information lose the single most reliable register signal Cambridge provides for free.',
+          },
+        ].map(item => (
+          <div class="border border-hacker-border p-5 grid grid-cols-[32px_1fr] gap-4">
+            <div class="text-hacker-red font-bold text-sm font-mono">{item.n}</div>
+            <div>
+              <div class="text-sm font-bold text-hacker-text mb-2">{item.title}</div>
+              <p class="text-xs text-hacker-dim leading-relaxed">{item.body}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- EXAMPLES -->
+    <section class="space-y-6">
+      <div class="text-xs text-hacker-dim">// REAL_FORMAT_EXAMPLES</div>
+      <h2 class="text-xl font-bold text-hacker-text">5 C1-calibrated examples with register analysis</h2>
+      <div class="space-y-5">
+        {[
+          {
+            n: '01', type: 'FORMAL COLLOCATION', register: 'Journalistic/political',
+            sentence: "The committee's decision to postpone the vote ___ widespread criticism from opposition parties.",
+            options: 'A. attracted   B. gained   C. earned   D. received',
+            answer: 'A — attracted criticism',
+            why: '"Attract criticism" is the established journalistic collocation. "Receive criticism" is semantically valid but register-neutral. The formal/political register of the sentence makes "attracted" — with its connotation of drawing criticism naturally — the precise choice. Cambridge places "received" specifically to catch candidates who know the collocation is verb+criticism but aren\'t register-calibrated.',
+          },
+          {
+            n: '02', type: 'ACADEMIC FIXED EXPRESSION', register: 'Formal/academic',
+            sentence: "The report failed to ___ into account the long-term environmental consequences of the development.",
+            options: 'A. bring   B. take   C. put   D. call',
+            answer: 'B — take into account',
+            why: '"Take into account" is the only established expression. "Call into account" is a Cambridge trap designed to be confused with "call into question" — a similar-sounding expression. At C1, fixed expression gaps deliberately use "almost right" distractors that resemble other real expressions.',
+          },
+          {
+            n: '03', type: 'ACADEMIC COLLOCATION', register: 'Academic prose',
+            sentence: "Her early research ___ the foundation for decades of subsequent work in neuroplasticity.",
+            options: 'A. set   B. built   C. laid   D. placed',
+            answer: 'C — laid the foundation',
+            why: '"Lay the foundation" is the established collocation — both literal and metaphorical. "Set the foundation" sounds plausible but is non-standard (confused with "set the groundwork"). "Build the foundation" is logical but not idiomatic in formal English. This is an archetypal C1 trap: all options involve physical construction verbs, only collocational knowledge resolves it.',
+          },
+          {
+            n: '04', type: 'REGISTER — FORMAL CONNECTOR', register: 'Legal/formal',
+            sentence: "The council approved the scheme ___ to the mayor's insistence on an independent audit.",
+            options: 'A. subject   B. owing   C. due   D. according',
+            answer: 'A — subject to',
+            why: '"Subject to" means "on the condition that" — a legal/formal expression of conditionality. "Owing to" and "due to" express cause (approved BECAUSE OF the insistence). The meaning is different: condition vs cause. Register AND meaning must both be checked. "According to" introduces a source, not a condition.',
+          },
+          {
+            n: '05', type: 'COLLOCATION + REGISTER', register: 'Literary/critical',
+            sentence: "The author ___ a compelling case for rethinking our assumptions about economic growth.",
+            options: 'A. does   B. makes   C. creates   D. builds',
+            answer: 'B — makes a case',
+            why: '"Make a case" is the academic/literary collocation for presenting an argument. "Build a case" exists in legal contexts but is less appropriate in literary criticism. "Create a case" conflates with "create an argument". The sentence\'s formal register ("compelling", "rethinking our assumptions") confirms academic register throughout — and "make" is the academically preferred verb in this collocation.',
+          },
+        ].map(ex => (
+          <div class="border border-hacker-border p-5 space-y-3">
+            <div class="flex flex-wrap gap-3 text-xs">
+              <span class="text-hacker-dim">Example {ex.n}</span>
+              <span class="text-hacker-green">[{ex.type}]</span>
+              <span class="text-hacker-dim">Register: {ex.register}</span>
+            </div>
+            <p class="text-sm text-hacker-text font-mono leading-7">{ex.sentence}</p>
+            <p class="text-xs text-hacker-dim font-mono">{ex.options}</p>
+            <div class="border-t border-hacker-border pt-3 space-y-1">
+              <p class="text-xs font-bold text-hacker-green">&gt;_ {ex.answer}</p>
+              <p class="text-xs text-hacker-dim leading-relaxed">{ex.why}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- MINI QUIZ -->
+    <section class="space-y-6">
+      <div class="text-xs text-hacker-dim">// PRACTICE_QUIZ</div>
+      <h2 class="text-xl font-bold text-hacker-text">Practice quiz — 5 C1-level questions</h2>
+      <p class="text-xs text-hacker-dim">All questions target formal-register collocations and fixed expressions. Read the full sentence for register before selecting your answer.</p>
+      <MiniQuiz client:load questions={quizQuestions} />
+    </section>
+
+    <!-- FAQ -->
+    <section class="space-y-6">
+      <div class="text-xs text-hacker-dim">// FAQ</div>
+      <h2 class="text-xl font-bold text-hacker-text">Frequently asked questions</h2>
+      <div class="space-y-4">
+        {[
+          { q: 'How is C1 Advanced Part 1 different from B2 First Part 1?', a: 'The format is identical (8 gaps, 4 options each), but C1 gaps operate at a fundamentally different level. Where B2 tests everyday collocations and phrasal verbs, C1 tests formal-register collocations, academic fixed expressions, and vocabulary distinctions that require sophisticated understanding of register. The distractors at C1 are semantically closer — often the difference between two near-synonyms is a single register marker.' },
+          { q: 'Do I need to know academic vocabulary for C1 Part 1?', a: 'Yes, significantly. C1 Part 1 texts frequently come from formal sources — journalism, academic writing, cultural commentary. Roughly 40–50% of gaps test formal or academic collocations rarely encountered in everyday speech. Reading authentic English from quality publications is the most efficient preparation.' },
+          { q: 'What percentage of C1 Part 1 gaps test collocations?', a: 'Collocations remain dominant at approximately 50%. However, at C1 the collocations are formal/academic rather than everyday. Fixed expressions account for roughly 20–25%, and at C1 level these are predominantly formal set phrases from educated written English. Register-based gaps account for an additional 15–20% — essentially absent at B2.' },
+          { q: 'Can I use the same strategies from B2 Part 1?', a: 'The core strategies transfer — classifying gap type, reading for surrounding collocation signals, testing connector grammar. What changes is the sophistication of application. At C1, you must additionally analyse the text\'s register before selecting. Two options may both be correct collocations, but only one matches the formal or informal register of the text.' },
+          { q: 'Is it possible to get full marks on C1 Part 1 without native-like English?', a: 'Yes, and many top C1 scorers are non-native speakers. C1 Part 1 rewards systematic preparation — learning formal collocations as units and reading in Cambridge\'s register. Native intuition can be a disadvantage if it leads to choosing informal collocations in formal contexts. Non-native learners who study Cambridge-specific vocabulary patterns consistently outscore native speakers who rely on instinct.' },
+        ].map(item => (
+          <details class="border border-hacker-border group">
+            <summary class="px-5 py-4 text-sm font-bold text-hacker-text cursor-pointer flex items-center justify-between list-none hover:text-hacker-green transition-colors">
+              <span>{item.q}</span>
+              <span class="text-hacker-green font-mono text-xs ml-4 shrink-0 group-open:rotate-90 transition-transform">&gt;</span>
+            </summary>
+            <div class="px-5 pb-4 text-xs text-hacker-dim leading-relaxed border-t border-hacker-border pt-3">{item.a}</div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <!-- COMPARE -->
+    <section class="space-y-6">
+      <div class="text-xs text-hacker-dim">// COMPARE_WITH_OTHER_PARTS</div>
+      <h2 class="text-xl font-bold text-hacker-text">B2 Part 1 vs C1 Part 1 — key differences</h2>
+      <div class="overflow-x-auto">
+        <table class="w-full text-xs font-mono border-collapse">
+          <thead>
+            <tr class="border-b border-hacker-border">
+              <th class="text-left py-3 pr-4 text-hacker-green font-bold">Feature</th>
+              <th class="text-left py-3 pr-4 text-hacker-dim font-normal">B2 First</th>
+              <th class="text-left py-3 text-hacker-green font-normal">C1 Advanced</th>
+            </tr>
+          </thead>
+          <tbody>
+            {[
+              ['Questions', '8', '8'],
+              ['Marks', '8', '8'],
+              ['Text length', '~150 words', '~175 words'],
+              ['Collocation register', 'Everyday / neutral', 'Formal / academic'],
+              ['Distractor proximity', 'Semantically distant', 'Often near-synonyms'],
+              ['Register gaps', 'Rarely', 'Regularly tested'],
+              ['Fixed expressions', 'Everyday idioms', 'Academic / formal phrases'],
+            ].map(([feature, b2, c1]) => (
+              <tr class="border-b border-hacker-border">
+                <td class="py-3 pr-4 font-bold text-hacker-text">{feature}</td>
+                <td class="py-3 pr-4 text-hacker-dim">{b2}</td>
+                <td class="py-3 text-hacker-green font-bold">{c1}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="border border-hacker-green p-6 space-y-5">
+      <div class="text-xs text-hacker-dim">// NEXT_STEPS</div>
+      <h2 class="text-lg font-bold text-hacker-text">Practice Part 1 in full C1 exam conditions</h2>
+      <p class="text-xs text-hacker-dim leading-relaxed">The free demo at /c1 is a real C1 Advanced Part 1 exercise — 8 questions, full exam format, answer key with explanations. The full pack contains 5 complete C1 Advanced exams (8 parts, 56 questions each).</p>
+      <div class="flex flex-col sm:flex-row gap-3">
+        <a href="/c1" class="border border-hacker-green text-hacker-green px-6 py-3 text-sm font-bold hover:bg-hacker-green hover:text-hacker-bg transition-colors text-center">&gt;_ Try the free C1 demo</a>
+        <a href={unlockUrl} class="bg-hacker-green text-hacker-bg px-6 py-3 text-sm font-bold hover:bg-hacker-green-dim transition-colors text-center">&gt;_ Unlock 5 full C1 exams — 9€</a>
+      </div>
+    </section>
+
+    <nav class="border-t border-hacker-border pt-6 space-y-3">
+      <div class="text-xs text-hacker-dim">// RELATED_PRACTICE_GUIDES</div>
+      <div class="flex flex-col gap-2 text-xs font-mono">
+        <a href="/practice/c1/use-of-english/part-4" class="text-hacker-green hover:text-hacker-green-dim transition-colors">→ C1 Key Word Transformations (Part 4)</a>
+        <a href="/practice/c1/reading/part-6" class="text-hacker-dim hover:text-hacker-green transition-colors">→ C1 Cross-text Multiple Matching (Part 6)</a>
+        <a href="/practice/b2/use-of-english/part-1" class="text-hacker-dim hover:text-hacker-green transition-colors">→ B2 First Use of English Part 1 (foundation level)</a>
+        <a href="/practice/b2/use-of-english/part-4" class="text-hacker-dim hover:text-hacker-green transition-colors">→ B2 Key Word Transformations</a>
+      </div>
+    </nav>
+
+  </main>
+
+  <footer class="border-t border-hacker-border px-6 py-6 mt-4 text-xs text-hacker-dim">
+    <div class="max-w-3xl mx-auto flex flex-wrap justify-between gap-4">
+      <a href="/c1" class="hover:text-hacker-green transition-colors">← Back to C1 Advanced</a>
+      <span>&copy; {new Date().getFullYear()} TheEnglishHacker.com</span>
+    </div>
+  </footer>
+</BaseLayout>
