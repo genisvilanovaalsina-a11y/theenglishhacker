@@ -1,5 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
-  <rect width="64" height="64" rx="8" fill="#0a0a0a"/>
-  <text x="6" y="26" font-family="monospace" font-size="16" font-weight="700" fill="#00ff88">&gt;_</text>
-  <text x="6" y="50" font-family="monospace" font-size="18" font-weight="700" fill="#e5e5e5">TH</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <rect width="32" height="32" fill="#0a0a0a"/>
+  <text
+    x="16" y="22"
+    font-family="'Courier New', Courier, monospace"
+    font-size="18" font-weight="700"
+    fill="#00FF88"
+    text-anchor="middle"
+    letter-spacing="-1"
+  >&gt;_</text>
 </svg>

@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <!-- Open Graph 1200x630 — quan es comparteix el web a xarxes -->
+  <rect width="1200" height="630" fill="#0a0a0a"/>
+
+  <!-- Corner brackets -->
+  <path d="M36,36 L36,90 M36,36 L90,36" stroke="#00FF88" stroke-width="3" fill="none" stroke-linecap="square"/>
+  <path d="M1164,36 L1164,90 M1164,36 L1110,36" stroke="#00FF88" stroke-width="3" fill="none" stroke-linecap="square"/>
+  <path d="M36,594 L36,540 M36,594 L90,594" stroke="#00FF88" stroke-width="3" fill="none" stroke-linecap="square"/>
+  <path d="M1164,594 L1164,540 M1164,594 L1110,594" stroke="#00FF88" stroke-width="3" fill="none" stroke-linecap="square"/>
+
+  <!-- Logo centrat -->
+  <text
+    x="600" y="238"
+    font-family="'JetBrains Mono', 'Fira Code', 'Courier New', Courier, monospace"
+    font-size="118" font-weight="700"
+    fill="#00FF88"
+    text-anchor="middle" dominant-baseline="middle"
+  >TheEnglish</text>
+  <text
+    x="600" y="372"
+    font-family="'JetBrains Mono', 'Fira Code', 'Courier New', Courier, monospace"
+    font-size="118" font-weight="700"
+    fill="#E5E5E5"
+    text-anchor="middle" dominant-baseline="middle"
+  >Hacker</text>
+
+  <!-- Tagline -->
+  <text
+    x="600" y="485"
+    font-family="'JetBrains Mono', 'Fira Code', 'Courier New', Courier, monospace"
+    font-size="24"
+    fill="#E5E5E5" opacity="0.4"
+    text-anchor="middle" dominant-baseline="middle"
+    letter-spacing="1"
+  >Practice Cambridge like a hacker. Pass like a pro.</text>
+
+  <!-- URL -->
+  <text
+    x="600" y="578"
+    font-family="'JetBrains Mono', 'Fira Code', 'Courier New', Courier, monospace"
+    font-size="18" font-weight="700"
+    fill="#00FF88" opacity="0.4"
+    text-anchor="middle"
+    letter-spacing="3"
+  >theenglishhacker.com</text>
+</svg>

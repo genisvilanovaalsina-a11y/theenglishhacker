@@ -1,0 +1,130 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+import aIconBlack      from '../assets/branding/a-icon-black.svg?raw';
+import aIconTransp     from '../assets/branding/a-icon-transparent.svg?raw';
+import aHorizontal     from '../assets/branding/a-horizontal.svg?raw';
+
+const proposals = [
+  {
+    id: 'A',
+    name: 'Terminal Prompt — SELECTED',
+    symbol: '&gt;_',
+    description: 'Logo final seleccionat. El símbol >_ com a icona, TheEnglish (verd) + Hacker (blanc) com a wordmark.',
+    pros: ['Reconeixible a 16px', 'Màxima coherència amb el web', 'Clar i net'],
+    iconBlack: aIconBlack,
+    iconTransp: aIconTransp,
+    horizontal: aHorizontal,
+  },
+];
+---
+
+<BaseLayout
+  title="Branding Lab | The English Hacker"
+  description="Internal branding preview."
+  noIndex={true}
+>
+  <main class="min-h-screen px-6 py-16 max-w-7xl mx-auto space-y-20">
+
+    <!-- Header -->
+    <div class="space-y-2">
+      <div class="text-xs text-hacker-dim">// BRANDING_LAB — dev only</div>
+      <h1 class="text-2xl font-bold text-hacker-green">&gt;_ Logo Proposals</h1>
+      <p class="text-xs text-hacker-dim max-w-xl">3 propostes de símbol per TheEnglishHacker. Cada proposta inclou: icona (fons negre), icona (fons transparent), i logo horitzontal. Tria la que t'agradi.</p>
+    </div>
+
+    <!-- Proposals -->
+    {proposals.map(p => (
+      <section class="space-y-8">
+
+        <!-- Proposal header -->
+        <div class="border-t border-hacker-border pt-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+          <div>
+            <div class="text-xs text-hacker-dim mb-1">// PROPOSTA_{p.id}</div>
+            <h2 class="text-xl font-bold text-hacker-text">{p.name}</h2>
+            <p class="text-xs text-hacker-dim mt-1 max-w-md">{p.description}</p>
+            <ul class="mt-2 flex gap-4 flex-wrap">
+              {p.pros.map(pro => (
+                <li class="text-xs text-hacker-green before:content-['✓_']">{pro}</li>
+              ))}
+            </ul>
+          </div>
+          <div class="text-2xl font-bold text-hacker-green opacity-30 font-mono" set:html={p.symbol}/>
+        </div>
+
+        <!-- Icons row -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+
+          <!-- Icon dark bg -->
+          <div class="space-y-2">
+            <div class="text-xs text-hacker-dim">Icona — fons negre</div>
+            <div class="border border-hacker-border p-2 inline-block">
+              <div class="w-48 h-48 [&_svg]:w-full [&_svg]:h-full" set:html={p.iconBlack}/>
+            </div>
+            <div class="text-xs text-hacker-dim">Foto de perfil (TikTok, Instagram, X)</div>
+          </div>
+
+          <!-- Icon transparent on white -->
+          <div class="space-y-2">
+            <div class="text-xs text-hacker-dim">Icona — fons clar</div>
+            <div class="border border-hacker-border p-2 inline-block bg-white">
+              <div class="w-48 h-48 [&_svg]:w-full [&_svg]:h-full" set:html={p.iconTransp}/>
+            </div>
+            <div class="text-xs text-hacker-dim">Com es veu sobre blanc (documents, PDFs)</div>
+          </div>
+
+          <!-- Icon small sizes simulation -->
+          <div class="space-y-2">
+            <div class="text-xs text-hacker-dim">Test de mida petita</div>
+            <div class="border border-hacker-border p-4 space-y-4">
+              <div class="flex items-center gap-4">
+                <div class="w-16 h-16 [&_svg]:w-full [&_svg]:h-full overflow-hidden rounded-full border border-hacker-border" set:html={p.iconBlack}/>
+                <span class="text-xs text-hacker-dim">64px (mòbil)</span>
+              </div>
+              <div class="flex items-center gap-4">
+                <div class="w-8 h-8 [&_svg]:w-full [&_svg]:h-full overflow-hidden" set:html={p.iconBlack}/>
+                <span class="text-xs text-hacker-dim">32px (favicon)</span>
+              </div>
+              <div class="flex items-center gap-4">
+                <div class="w-4 h-4 [&_svg]:w-full [&_svg]:h-full overflow-hidden" set:html={p.iconBlack}/>
+                <span class="text-xs text-hacker-dim">16px (favicon mínim)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Horizontal logo -->
+        <div class="space-y-2">
+          <div class="text-xs text-hacker-dim">Logo horitzontal — simulació header web</div>
+          <div class="border border-hacker-border p-6 bg-hacker-bg">
+            <!-- Header mockup -->
+            <div class="border-b border-hacker-border pb-4 mb-4 flex items-center justify-between">
+              <div class="w-64 [&_svg]:w-full [&_svg]:h-auto" set:html={p.horizontal}/>
+              <div class="hidden sm:flex items-center gap-6 text-xs text-hacker-dim">
+                <span class="hover:text-hacker-green cursor-pointer">[ B2_FIRST ]</span>
+                <span class="hover:text-hacker-green cursor-pointer">[ C1_ADVANCED ]</span>
+                <span class="bg-hacker-green text-hacker-bg px-3 py-1 font-bold cursor-pointer">&gt;_ UNLOCK</span>
+              </div>
+            </div>
+            <div class="text-xs text-hacker-dim">← Simulació del header del web</div>
+          </div>
+        </div>
+
+      </section>
+    ))}
+
+    <!-- Footer CTA -->
+    <div class="border-t border-hacker-border pt-10 text-center space-y-3">
+      <div class="text-xs text-hacker-dim">// DECISION</div>
+      <p class="text-sm text-hacker-text">Diga'm quina proposta vols (A, B o C) i implemento els fitxers finals.</p>
+      <p class="text-xs text-hacker-dim">favicon.svg · favicon.ico · og-image.png · logo header</p>
+    </div>
+
+  </main>
+</BaseLayout>
+
+<script>
+  if (location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
+    location.replace('/404');
+  }
+</script>
