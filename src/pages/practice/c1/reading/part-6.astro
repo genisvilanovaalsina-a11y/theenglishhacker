@@ -1,0 +1,461 @@
+---
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import MiniQuiz from '../../../../components/practice/MiniQuiz';
+import type { QuizQuestion } from '../../../../components/practice/MiniQuiz';
+
+const unlockUrl = import.meta.env.STRIPE_C1_URL ?? '/unlock';
+
+// Mini cross-text simulation — 4 short texts on a shared topic,
+// followed by opinion-matching questions using the MiniQuiz MCQ format
+const miniTexts = [
+  {
+    label: 'A — Dr Sarah Hughes (cognitive scientist)',
+    text: 'The evidence overwhelmingly supports adult language learning as cognitively beneficial. What surprises many researchers is the speed at which motivated adults achieve functional proficiency — often faster than children in formal instruction settings, contrary to the popular narrative.',
+  },
+  {
+    label: 'B — Prof. Marcus Chen (linguist)',
+    text: 'I remain cautious about overstating the cognitive benefits of adult language acquisition. Much of the research fails to control for pre-existing cognitive advantages in the populations who choose to learn languages. The social benefits, however, are genuinely significant and consistently undervalued in academic discourse.',
+  },
+  {
+    label: 'C — Dr Ana Reyes (educational psychologist)',
+    text: 'Adult learners face unique challenges that children simply do not — primarily time constraints and the psychological barrier of making errors in front of peers. That said, adults bring metacognitive awareness to language learning that makes structured programmes more efficient than is often assumed by instructors trained on child acquisition models.',
+  },
+  {
+    label: 'D — James Fowler (applied linguist)',
+    text: 'The narrative that children are inherently superior language learners is largely a myth perpetuated by the language learning industry. Adults possess larger L1 vocabularies and superior analytical skills — both of which accelerate acquisition when properly harnessed by evidence-based methodology.',
+  },
+];
+
+const quizQuestions: QuizQuestion[] = [
+  {
+    id: 1,
+    sentence: 'Read the four texts above, then answer:\n\nWhich writer shares Dr Hughes\'s (Text A) view that adults can acquire language faster than is commonly believed?',
+    options: [
+      { key: 'A', value: 'Text A — Dr Hughes' },
+      { key: 'B', value: 'Text B — Prof. Chen' },
+      { key: 'C', value: 'Text C — Dr Reyes' },
+      { key: 'D', value: 'Text D — James Fowler' },
+    ],
+    answer: 'D',
+    explanation: 'Fowler (D) challenges the myth that children are superior learners — directly echoing Hughes\'s (A) position. Chen (B) is cautious/sceptical. Reyes (C) acknowledges adult challenges, though she notes adults can be efficient with structured programmes. The question asks who SHARES Hughes\'s view — only Fowler makes the same positive claim about adult speed.',
+    gapType: 'opinion comparison',
+  },
+  {
+    id: 2,
+    sentence: 'Which writer expresses a different view from the others about the cognitive benefits of adult language learning?',
+    options: [
+      { key: 'A', value: 'Text A — Dr Hughes' },
+      { key: 'B', value: 'Text B — Prof. Chen' },
+      { key: 'C', value: 'Text C — Dr Reyes' },
+      { key: 'D', value: 'Text D — James Fowler' },
+    ],
+    answer: 'B',
+    explanation: 'Chen (B) explicitly states he is "cautious about overstating cognitive benefits" and questions the research quality. Hughes (A) and Fowler (D) are positive about adult advantages. Reyes (C) focuses on challenges but implies structured learning is efficient — not sceptical of cognitive benefits. Only Chen takes the sceptical position.',
+    gapType: 'identifying divergent opinion',
+  },
+  {
+    id: 3,
+    sentence: 'Which writer specifically identifies a psychological obstacle unique to adult language learners?',
+    options: [
+      { key: 'A', value: 'Text A — Dr Hughes' },
+      { key: 'B', value: 'Text B — Prof. Chen' },
+      { key: 'C', value: 'Text C — Dr Reyes' },
+      { key: 'D', value: 'Text D — James Fowler' },
+    ],
+    answer: 'C',
+    explanation: 'Only Reyes (C) explicitly mentions "the psychological barrier of making errors in front of peers" as a challenge specific to adults. Hughes (A) doesn\'t mention psychological barriers. Chen (B) focuses on research methodology concerns. Fowler (D) argues adults\' analytical advantages — positive framing. Key skill: distinguishing what a writer MENTIONS from what all writers discuss.',
+    gapType: 'specific detail identification',
+  },
+  {
+    id: 4,
+    sentence: 'Which writer suggests that the perceived advantages of child language learners may be misleading or commercially motivated?',
+    options: [
+      { key: 'A', value: 'Text A — Dr Hughes' },
+      { key: 'B', value: 'Text B — Prof. Chen' },
+      { key: 'C', value: 'Text C — Dr Reyes' },
+      { key: 'D', value: 'Text D — James Fowler' },
+    ],
+    answer: 'D',
+    explanation: 'Fowler (D) explicitly calls the narrative a "myth perpetuated by the language learning industry" — both questioning its validity AND identifying a commercial motive. Hughes (A) disputes the narrative but doesn\'t mention commercial motivation. Chen (B) questions research methodology but doesn\'t imply commercial motivation. Reyes (C) acknowledges adult challenges — doesn\'t challenge the child-advantage narrative directly.',
+    gapType: 'implied meaning + attitude',
+  },
+];
+
+const schemaLearningResource = {
+  "@context": "https://schema.org",
+  "@type": "LearningResource",
+  "name": "C1 Advanced Reading Part 6: Cross-text Multiple Matching — Complete Guide",
+  "description": "Master C1 Advanced Reading Part 6 with the opinion-mapping technique. Learn why cross-text matching is unique, the 4 question types Cambridge uses, and practise with an authentic mini cross-text simulation.",
+  "url": "https://theenglishhacker.com/practice/c1/reading/part-6",
+  "educationalLevel": "C1",
+  "learningResourceType": ["Guide", "Practice"],
+  "teaches": "Cambridge C1 Advanced Reading Part 6 — Cross-text Multiple Matching",
+  "inLanguage": "en",
+  "provider": { "@type": "Organization", "name": "TheEnglishHacker", "url": "https://theenglishhacker.com" }
+};
+
+const schemaBreadcrumb = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://theenglishhacker.com" },
+    { "@type": "ListItem", "position": 2, "name": "C1 Advanced", "item": "https://theenglishhacker.com/c1" },
+    { "@type": "ListItem", "position": 3, "name": "Reading", "item": "https://theenglishhacker.com/c1" },
+    { "@type": "ListItem", "position": 4, "name": "Part 6 — Cross-text Multiple Matching", "item": "https://theenglishhacker.com/practice/c1/reading/part-6" }
+  ]
+};
+
+const schemaFAQ = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How many texts and questions are in C1 Advanced Reading Part 6?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Part 6 contains 4 short texts (approximately 600 words total, roughly 150 words each) written by different authors on the same topic. There are 4 questions, each asking you to match a statement to the writer who expresses that view. 1 mark per correct answer, 4 marks total." }
+    },
+    {
+      "@type": "Question",
+      "name": "What makes C1 Part 6 different from other C1 reading parts?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Parts 5, 7, and 8 require reading comprehension within single texts. Part 6 requires you to compare and contrast opinions across 4 different texts simultaneously. The key skill is not understanding what is written in one text, but tracking how 4 writers position themselves relative to each other on a shared topic. This is the only reading part that explicitly tests cross-text comparison." }
+    },
+    {
+      "@type": "Question",
+      "name": "Can the same writer be the answer to more than one question in Part 6?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes. In C1 Reading Part 6, each writer (A, B, C, D) can be the answer to more than one question. There is no requirement for each writer to appear exactly once. However, Cambridge designs the texts so that no single writer dominates all four answers — the correct answers are typically distributed across at least 3 of the 4 texts." }
+    },
+    {
+      "@type": "Question",
+      "name": "What are the most common question types in Part 6?",
+      "acceptedAnswer": { "@type": "Answer", "text": "The four most frequent question types are: (1) opinion comparison ('which writer shares Writer X\'s view about...'), (2) divergent opinion ('which writer disagrees with the others about...'), (3) specific detail or attitude identification ('which writer mentions/suggests/implies...'), and (4) implied meaning ('which writer\'s attitude towards X is most positive/negative/cautious'). The first two types — comparison and divergence — account for the majority of questions." }
+    },
+    {
+      "@type": "Question",
+      "name": "How much time should I spend on Part 6 in the C1 exam?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Part 6 offers 4 marks from approximately 600 words of reading. The recommended time allocation is 12–15 minutes. Compare this with Part 5 (6 marks from one text, ~30 minutes) and Part 7 (10 marks from multiple short texts, ~20 minutes). Part 6's relatively low mark-per-word ratio means it should be attempted efficiently — if a question is taking more than 3 minutes, make your best guess and move on." }
+    }
+  ]
+};
+---
+
+<BaseLayout
+  title="C1 Advanced Reading Part 6: Cross-text Multiple Matching — The Opinion-Mapping Technique"
+  description="C1 Reading Part 6 is the only exam part that tests cross-text opinion comparison. Learn the opinion-mapping method, the 4 question types Cambridge uses, and practise with a full mini cross-text simulation."
+  ogImage="/logo-og.svg"
+>
+  <script type="application/ld+json" set:html={JSON.stringify(schemaLearningResource)} />
+  <script type="application/ld+json" set:html={JSON.stringify(schemaBreadcrumb)} />
+  <script type="application/ld+json" set:html={JSON.stringify(schemaFAQ)} />
+
+  <header class="border-b border-hacker-border px-4 py-3 text-xs text-hacker-dim overflow-x-auto">
+    <div class="flex items-center gap-4 min-w-max">
+      <a href="/" class="text-hacker-green hover:text-hacker-green-dim transition-colors">&gt;_ TheEnglishHacker</a>
+      <span>/</span>
+      <a href="/c1" class="hover:text-hacker-green transition-colors">[ C1_ADVANCED ]</a>
+      <span>/</span>
+      <span class="text-hacker-text">Reading · Part 6</span>
+    </div>
+  </header>
+
+  <main class="max-w-3xl mx-auto px-4 py-12 space-y-16">
+
+    <!-- HERO -->
+    <section class="space-y-5">
+      <div class="text-xs text-hacker-dim">// PRACTICE_GUIDE · C1_ADVANCED · READING</div>
+      <h1 class="text-3xl font-bold text-hacker-text leading-tight">
+        Reading — Part 6<br/>
+        <span class="text-hacker-green">Cross-text Multiple Matching</span>
+      </h1>
+      <div class="flex flex-wrap gap-4 text-xs font-mono">
+        <span class="border border-hacker-border px-3 py-1 text-hacker-dim">4 texts</span>
+        <span class="border border-hacker-border px-3 py-1 text-hacker-dim">4 questions</span>
+        <span class="border border-hacker-border px-3 py-1 text-hacker-dim">4 marks</span>
+        <span class="border border-hacker-green px-3 py-1 text-hacker-green">Difficulty: ★★★★☆</span>
+        <span class="border border-hacker-border px-3 py-1 text-hacker-dim">~8 min read</span>
+      </div>
+      <p class="text-sm text-hacker-dim leading-relaxed">
+        The only C1 reading part that requires you to track and compare 4 writers' opinions simultaneously. Reading comprehension isn't enough here — you need to build a mental map of each writer's position before answering a single question.
+      </p>
+    </section>
+
+    <!-- WHO THIS IS FOR -->
+    <section class="border border-hacker-border p-6 space-y-3">
+      <div class="text-xs text-hacker-dim">// WHO_THIS_IS_FOR</div>
+      <p class="text-sm text-hacker-text leading-relaxed">
+        If you find yourself re-reading all four texts for each question — or if you're confident you understand each text individually but still get the comparison questions wrong — this guide is for you. The problem is almost never comprehension. It's <strong class="text-hacker-green">method</strong>: most candidates approach Part 6 as four separate reading tasks, when it's actually one opinion-mapping task that uses four source texts.
+      </p>
+    </section>
+
+    <!-- WHAT IS THIS PART -->
+    <section class="space-y-6">
+      <div class="text-xs text-hacker-dim">// WHAT_IS_THIS_PART</div>
+      <h2 class="text-xl font-bold text-hacker-text">What exactly is Part 6?</h2>
+      <p class="text-sm text-hacker-dim leading-relaxed">
+        Part 6 presents four short texts (A, B, C, D) written by different authors on the same topic — a scientific question, a cultural debate, a professional issue. Each text is approximately 150 words. Following the texts are <strong class="text-hacker-text">4 questions</strong>, each asking you to identify which writer expresses a specific opinion, attitude, or piece of information. The answer to each question is one of the four texts (A, B, C, or D).
+      </p>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        {[
+          ['Texts', '4 (one per writer)'],
+          ['Total words', '~600'],
+          ['Questions', '4'],
+          ['Marks', '4 (1 per Q)'],
+        ].map(([label, value]) => (
+          <div class="border border-hacker-border p-3 space-y-1">
+            <div class="text-xs text-hacker-dim">{label}</div>
+            <div class="text-sm font-bold text-hacker-green">{value}</div>
+          </div>
+        ))}
+      </div>
+      <div class="border border-hacker-amber/40 p-4 text-sm text-hacker-dim leading-relaxed">
+        <strong class="text-hacker-amber">Key fact:</strong> The same writer can be the correct answer to multiple questions. There's no requirement for A, B, C, and D each to appear exactly once. Cambridge designs the question distribution so that correct answers are typically spread across at least 3 of the 4 texts — but you cannot assume each writer appears exactly once.
+      </div>
+    </section>
+
+    <!-- WHAT'S TESTED -->
+    <section class="space-y-6">
+      <div class="text-xs text-hacker-dim">// WHAT_IS_TESTED</div>
+      <h2 class="text-xl font-bold text-hacker-text">What Part 6 actually tests</h2>
+      <p class="text-sm text-hacker-dim leading-relaxed">
+        Part 6 is the only reading part in the C1 paper that tests <strong class="text-hacker-text">cross-text opinion comparison</strong> rather than intra-text comprehension. The specific skills:
+      </p>
+      <div class="space-y-4">
+        {[
+          {
+            skill: 'Tracking attitude and perspective',
+            desc: 'You must register not just WHAT each writer says, but HOW they feel about it. Two writers may both describe the same phenomenon — one positively, one sceptically. The question tests whether you tracked the evaluative dimension of each text, not just its informational content.',
+          },
+          {
+            skill: 'Distinguishing opinion from description',
+            desc: 'Writers in Part 6 often describe positions they disagree with before arguing against them. A writer who spends a sentence describing an opposing view is not endorsing that view. Cambridge tests this distinction directly — the trap is matching a question to the writer who MENTIONS a view rather than the one who HOLDS it.',
+          },
+          {
+            skill: 'Identifying agreement and disagreement across texts',
+            desc: 'Questions like "which writer agrees with Writer A about X?" require you to first identify Writer A\'s position on X, then scan the other three texts for the same evaluative stance. This is a two-step process: position extraction + position comparison. Candidates who only do one step consistently misanswer these questions.',
+          },
+          {
+            skill: 'Reading implied stance from tone and word choice',
+            desc: 'Writers in academic and journalistic texts often signal disagreement or scepticism through hedging language ("it is claimed that", "proponents argue"), evaluative adjectives ("so-called", "alleged"), and ironic distance rather than explicit statements. Part 6 regularly tests whether candidates can detect these signals.',
+          },
+        ].map(item => (
+          <div class="border border-hacker-border p-4 space-y-2">
+            <div class="text-sm font-bold text-hacker-text">{item.skill}</div>
+            <p class="text-xs text-hacker-dim leading-relaxed">{item.desc}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- STRATEGIES -->
+    <section class="space-y-6">
+      <div class="text-xs text-hacker-dim">// STRATEGIES</div>
+      <h2 class="text-xl font-bold text-hacker-text">5 strategies for Part 6</h2>
+      <div class="space-y-5">
+        <div class="border-l-2 border-hacker-green pl-5 space-y-2">
+          <div class="text-xs text-hacker-dim">STRATEGY_01</div>
+          <h3 class="text-sm font-bold text-hacker-text">Read all 4 texts first — before looking at the questions</h3>
+          <p class="text-xs text-hacker-dim leading-relaxed">This is counterintuitive but critical. Most reading strategies recommend reading questions first. In Part 6, reading questions first leads to searching for keywords rather than tracking opinion — which is precisely the wrong cognitive mode. Read all four texts in order, taking a maximum of 30 seconds per text to note: (a) the writer's field/background, (b) their overall stance (positive / negative / cautious / mixed), and (c) any specific claims they make about the topic. Only then read the questions.</p>
+        </div>
+        <div class="border-l-2 border-hacker-green pl-5 space-y-2">
+          <div class="text-xs text-hacker-dim">STRATEGY_02</div>
+          <h3 class="text-sm font-bold text-hacker-text">Build a 4-column opinion grid before answering</h3>
+          <p class="text-xs text-hacker-dim leading-relaxed">After reading all four texts, draw or mentally organise a simple grid: Writer A | Writer B | Writer C | Writer D. For each key theme in the texts, mark each writer's position with a symbol: + (positive/supportive), − (negative/critical), ~ (cautious/neutral), ? (doesn't address this). This 60-second investment prevents the most common Part 6 mistake: matching based on topic mention rather than opinion direction.</p>
+        </div>
+        <div class="border-l-2 border-hacker-green pl-5 space-y-2">
+          <div class="text-xs text-hacker-dim">STRATEGY_03</div>
+          <h3 class="text-sm font-bold text-hacker-text">For "who agrees with Writer X" questions: extract X's position first</h3>
+          <p class="text-xs text-hacker-dim leading-relaxed">When a question asks "which writer shares Writer A's view about Y?", do not immediately search the other texts for the answer. First, return to Writer A and state (in your head) exactly what position they take on Y. Then, and only then, check writers B, C, and D for the same evaluative stance. Candidates who skip the first step frequently choose a writer who discusses the same topic but from the opposite angle.</p>
+        </div>
+        <div class="border-l-2 border-hacker-green pl-5 space-y-2">
+          <div class="text-xs text-hacker-dim">STRATEGY_04</div>
+          <h3 class="text-sm font-bold text-hacker-text">Distinguish what a writer mentions from what a writer believes</h3>
+          <p class="text-xs text-hacker-dim leading-relaxed">The most dangerous trap in Part 6: a writer who mentions a view as a counterargument or reported position may appear — superficially — to hold that view. Scan for reporting structures: "It has been argued that...", "Proponents claim...", "Some researchers suggest..." — followed by the writer's rebuttal. The writer has introduced a view only to dismiss it. Never match a question to a writer based on keyword occurrence alone.</p>
+        </div>
+        <div class="border-l-2 border-hacker-green pl-5 space-y-2">
+          <div class="text-xs text-hacker-dim">STRATEGY_05</div>
+          <h3 class="text-sm font-bold text-hacker-text">Watch for hedging language as a stance marker</h3>
+          <p class="text-xs text-hacker-dim leading-relaxed">Academic writers signal scepticism, uncertainty, and disagreement through grammatical hedges rather than explicit criticism. "It has been claimed that..." (sceptical of what follows), "while this may be true..." (concession before rebuttal), "the evidence remains inconclusive..." (cautious stance). These markers are the textual evidence for questions asking about a writer's "attitude" or "approach" — Cambridge uses them as the foundation of implied-stance questions.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMMON MISTAKES -->
+    <section class="space-y-6">
+      <div class="text-xs text-hacker-dim">// COMMON_MISTAKES</div>
+      <h2 class="text-xl font-bold text-hacker-text">3 mistakes that cost marks in Part 6</h2>
+      <div class="space-y-4">
+        {[
+          {
+            n: '01',
+            title: 'Matching based on topic mention, not opinion',
+            body: 'The single most common error in Part 6. A question asks "which writer is most supportive of adult language learning?" — and the candidate chooses the writer who MENTIONS adult language learning most prominently, regardless of their evaluative stance. In Cambridge Part 6, the texts all discuss the same topic. Topic mention is never sufficient for correct matching. Only opinion direction matters.',
+          },
+          {
+            n: '02',
+            title: 'Reading each text again for each individual question',
+            body: 'Candidates who re-read all four texts from scratch for every question typically run out of time before answering all four questions — and ironically achieve lower accuracy than candidates who read once thoroughly. The opinion grid built after the initial reading should contain enough information to answer 3 of the 4 questions without re-reading. Only return to a specific text when you need to verify a precise detail or quotation.',
+          },
+          {
+            n: '03',
+            title: 'Assuming each writer appears exactly once',
+            body: 'Many candidates — particularly those familiar with Part 7 (multiple matching) — assume that A, B, C, and D each answer one question. This is false for Part 6. Cambridge does not balance answers. If Writer B holds the opinion asked about in three separate questions, Writer B appears three times. Candidates who "balance" their answers by avoiding repeated letters introduce systematic errors into their responses.',
+          },
+        ].map(item => (
+          <div class="border border-hacker-border p-5 grid grid-cols-[32px_1fr] gap-4">
+            <div class="text-hacker-red font-bold text-sm font-mono">{item.n}</div>
+            <div>
+              <div class="text-sm font-bold text-hacker-text mb-2">{item.title}</div>
+              <p class="text-xs text-hacker-dim leading-relaxed">{item.body}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- MINI CROSS-TEXT SIMULATION -->
+    <section class="space-y-6">
+      <div class="text-xs text-hacker-dim">// CROSS_TEXT_SIMULATION</div>
+      <h2 class="text-xl font-bold text-hacker-text">Mini cross-text simulation</h2>
+      <p class="text-xs text-hacker-dim">Read all four texts carefully before answering any question. Build your opinion grid first. Each text is approximately 50 words — a reduced version of the real format (which uses ~150 words per text).</p>
+
+      <!-- 4 texts -->
+      <div class="space-y-4">
+        {miniTexts.map((t) => (
+          <div class="border border-hacker-border p-5 space-y-2">
+            <div class="text-xs text-hacker-green font-bold">{t.label}</div>
+            <p class="text-sm text-hacker-dim leading-relaxed">{t.text}</p>
+          </div>
+        ))}
+      </div>
+
+      <!-- Questions -->
+      <div class="border-t border-hacker-border pt-6 space-y-3">
+        <div class="text-xs text-hacker-dim">// QUESTIONS — answer based on the texts above</div>
+        <MiniQuiz client:load questions={quizQuestions} />
+      </div>
+    </section>
+
+    <!-- THE 4 QUESTION TYPES -->
+    <section class="space-y-6">
+      <div class="text-xs text-hacker-dim">// QUESTION_TYPES</div>
+      <h2 class="text-xl font-bold text-hacker-text">The 4 question types Cambridge uses in Part 6</h2>
+      <div class="space-y-4">
+        {[
+          {
+            type: 'Opinion comparison',
+            desc: '"Which writer shares Writer X\'s view about Y?" — Requires identifying Writer X\'s position first, then locating the same evaluative stance in another text. The most frequent question type, appearing in approximately 60% of Part 6 papers.',
+            signal: 'Keywords: "shares", "agrees with", "similar view to", "same opinion as"',
+          },
+          {
+            type: 'Divergent opinion',
+            desc: '"Which writer disagrees with / expresses a different view from the others about Y?" — Requires mapping all four positions and identifying the outlier. Tests whether candidates tracked not just one writer but the full distribution of opinions.',
+            signal: 'Keywords: "disagrees", "different view", "unlike", "a contrasting opinion"',
+          },
+          {
+            type: 'Specific detail or attitude',
+            desc: '"Which writer mentions / suggests / implies X?" — Tests whether a specific detail, attitude, or piece of information can be located in a specific text. Less comparative than types 1 and 2, but still requires ruling out the other three texts.',
+            signal: 'Keywords: "mentions", "suggests", "implies", "refers to", "identifies"',
+          },
+          {
+            type: 'Implied stance',
+            desc: '"Which writer\'s attitude towards Y is most positive/negative/cautious?" — Tests inference of evaluative stance from tone and hedging language rather than explicit statements. The most cognitively demanding question type in Part 6.',
+            signal: 'Keywords: "attitude", "approach", "tone", "most positive/negative/cautious"',
+          },
+        ].map(item => (
+          <div class="border border-hacker-border p-5 space-y-2">
+            <div class="text-sm font-bold text-hacker-green">{item.type}</div>
+            <p class="text-xs text-hacker-dim leading-relaxed">{item.desc}</p>
+            <p class="text-xs text-hacker-amber font-mono">{item.signal}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="space-y-6">
+      <div class="text-xs text-hacker-dim">// FAQ</div>
+      <h2 class="text-xl font-bold text-hacker-text">Frequently asked questions</h2>
+      <div class="space-y-4">
+        {[
+          { q: 'How many texts and questions are in C1 Reading Part 6?', a: '4 short texts (approximately 600 words total, ~150 words each) by different authors on the same topic, followed by 4 questions. 1 mark per correct answer, 4 marks total.' },
+          { q: 'What makes Part 6 different from other C1 reading parts?', a: 'Parts 5, 7, and 8 require comprehension within single texts. Part 6 requires comparing opinions across 4 texts simultaneously. The skill is not understanding what is written in one text, but tracking how 4 writers position themselves relative to each other on a shared topic.' },
+          { q: 'Can the same writer be the answer to more than one question?', a: 'Yes. Each writer (A, B, C, D) can be the correct answer to multiple questions. There is no requirement for each writer to appear exactly once. Cambridge designs the texts so answers are typically spread across at least 3 texts — but this is not guaranteed.' },
+          { q: 'What are the most common question types in Part 6?', a: 'Opinion comparison ("which writer shares Writer X\'s view") and divergent opinion ("which writer disagrees with the others") account for the majority of questions. Specific detail identification and implied stance questions make up the remaining types.' },
+          { q: 'How much time should I spend on Part 6?', a: 'Part 6 offers 4 marks from ~600 words. The recommended allocation is 12–15 minutes. Compare with Part 5 (6 marks, ~30 minutes recommended). Part 6\'s relatively low mark-per-word ratio means it should be attempted efficiently — if a question takes more than 3 minutes, make your best guess and move on.' },
+        ].map(item => (
+          <details class="border border-hacker-border group">
+            <summary class="px-5 py-4 text-sm font-bold text-hacker-text cursor-pointer flex items-center justify-between list-none hover:text-hacker-green transition-colors">
+              <span>{item.q}</span>
+              <span class="text-hacker-green font-mono text-xs ml-4 shrink-0 group-open:rotate-90 transition-transform">&gt;</span>
+            </summary>
+            <div class="px-5 pb-4 text-xs text-hacker-dim leading-relaxed border-t border-hacker-border pt-3">{item.a}</div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <!-- COMPARE -->
+    <section class="space-y-6">
+      <div class="text-xs text-hacker-dim">// COMPARE_WITH_OTHER_PARTS</div>
+      <h2 class="text-xl font-bold text-hacker-text">C1 Reading Part 6 vs other C1 reading parts</h2>
+      <div class="overflow-x-auto">
+        <table class="w-full text-xs font-mono border-collapse">
+          <thead>
+            <tr class="border-b border-hacker-border">
+              <th class="text-left py-3 pr-3 text-hacker-green font-bold">Part</th>
+              <th class="text-left py-3 pr-3 text-hacker-dim font-normal">Format</th>
+              <th class="text-left py-3 pr-3 text-hacker-dim font-normal">Marks</th>
+              <th class="text-left py-3 pr-3 text-hacker-dim font-normal">Core skill</th>
+              <th class="text-left py-3 text-hacker-dim font-normal">Difficulty</th>
+            </tr>
+          </thead>
+          <tbody>
+            {[
+              { part: 'Part 5 · Multiple Choice', format: '1 text · 6 questions', marks: '12', skill: 'Detail + implication', diff: '★★★★☆', current: false },
+              { part: 'Part 6 · Cross-text Matching', format: '4 texts · 4 questions', marks: '4', skill: 'Cross-text opinion comparison', diff: '★★★★☆', current: true },
+              { part: 'Part 7 · Gapped Text', format: '1 text + 6 paragraphs', marks: '6', skill: 'Cohesion + coherence', diff: '★★★★☆', current: false },
+              { part: 'Part 8 · Multiple Matching', format: 'Multiple texts · 10 Q', marks: '10', skill: 'Scanning for specific info', diff: '★★★☆☆', current: false },
+            ].map(row => (
+              <tr class={`border-b border-hacker-border ${row.current ? 'bg-hacker-green/5' : ''}`}>
+                <td class={`py-3 pr-3 font-bold ${row.current ? 'text-hacker-green' : 'text-hacker-text'}`}>{row.part}</td>
+                <td class="py-3 pr-3 text-hacker-dim">{row.format}</td>
+                <td class="py-3 pr-3 text-hacker-dim">{row.marks}</td>
+                <td class="py-3 pr-3 text-hacker-dim">{row.skill}</td>
+                <td class="py-3 text-hacker-amber">{row.diff}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="text-xs text-hacker-dim">Part 6 has the fewest marks (4) but is cognitively the most demanding reading task in the C1 paper. The opinion-mapping skill it tests is genuinely advanced — and also the most transferable to real-world academic and professional reading.</p>
+    </section>
+
+    <!-- CTA -->
+    <section class="border border-hacker-green p-6 space-y-5">
+      <div class="text-xs text-hacker-dim">// NEXT_STEPS</div>
+      <h2 class="text-lg font-bold text-hacker-text">Practice cross-text matching in full exam conditions</h2>
+      <p class="text-xs text-hacker-dim leading-relaxed">The 5 complete C1 Advanced exams in the full pack each include a Reading Part 6 with authentic 4-text cross-text matching exercises, full answer keys, and question-by-question analysis of which writer holds which opinion and why.</p>
+      <div class="flex flex-col sm:flex-row gap-3">
+        <a href="/c1" class="border border-hacker-green text-hacker-green px-6 py-3 text-sm font-bold hover:bg-hacker-green hover:text-hacker-bg transition-colors text-center">&gt;_ Try the free C1 demo</a>
+        <a href={unlockUrl} class="bg-hacker-green text-hacker-bg px-6 py-3 text-sm font-bold hover:bg-hacker-green-dim transition-colors text-center">&gt;_ Unlock 5 full C1 exams — 9€</a>
+      </div>
+    </section>
+
+    <nav class="border-t border-hacker-border pt-6 space-y-3">
+      <div class="text-xs text-hacker-dim">// RELATED_PRACTICE_GUIDES</div>
+      <div class="flex flex-col gap-2 text-xs font-mono">
+        <a href="/practice/c1/use-of-english/part-1" class="text-hacker-green hover:text-hacker-green-dim transition-colors">→ C1 Use of English Part 1 — Multiple Choice Cloze</a>
+        <a href="/practice/c1/use-of-english/part-4" class="text-hacker-dim hover:text-hacker-green transition-colors">→ C1 Key Word Transformations (Part 4)</a>
+        <a href="/practice/b2/use-of-english/part-1" class="text-hacker-dim hover:text-hacker-green transition-colors">→ B2 Use of English Part 1</a>
+        <a href="/practice/b2/use-of-english/part-4" class="text-hacker-dim hover:text-hacker-green transition-colors">→ B2 Key Word Transformations</a>
+      </div>
+    </nav>
+
+  </main>
+
+  <footer class="border-t border-hacker-border px-6 py-6 mt-4 text-xs text-hacker-dim">
+    <div class="max-w-3xl mx-auto flex flex-wrap justify-between gap-4">
+      <a href="/c1" class="hover:text-hacker-green transition-colors">← Back to C1 Advanced</a>
+      <span>&copy; {new Date().getFullYear()} TheEnglishHacker.com</span>
+    </div>
+  </footer>
+</BaseLayout>
