@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" width="1000" height="1000">
+  <!-- Foto de perfil — TikTok, Instagram, X (funciona retallat en cercle) -->
+  <rect width="1000" height="1000" fill="#0a0a0a"/>
+  <text
+    x="500" y="430"
+    font-family="'JetBrains Mono', 'Fira Code', 'Courier New', Courier, monospace"
+    font-size="148" font-weight="700"
+    fill="#00FF88"
+    text-anchor="middle" dominant-baseline="middle"
+  >TheEnglish</text>
+  <text
+    x="500" y="590"
+    font-family="'JetBrains Mono', 'Fira Code', 'Courier New', Courier, monospace"
+    font-size="148" font-weight="700"
+    fill="#E5E5E5"
+    text-anchor="middle" dominant-baseline="middle"
+  >Hacker</text>
+</svg>

@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <!-- Transparent background -->
+  <!-- Corner brackets -->
+  <path d="M48,48 L48,140 M48,48 L140,48" stroke="#00FF88" stroke-width="8" fill="none" stroke-linecap="square"/>
+  <path d="M976,48 L976,140 M976,48 L884,48" stroke="#00FF88" stroke-width="8" fill="none" stroke-linecap="square"/>
+  <path d="M48,976 L48,884 M48,976 L140,976" stroke="#00FF88" stroke-width="8" fill="none" stroke-linecap="square"/>
+  <path d="M976,976 L976,884 M976,976 L884,976" stroke="#00FF88" stroke-width="8" fill="none" stroke-linecap="square"/>
+
+  <!-- ">_" symbol -->
+  <text
+    x="512" y="540"
+    font-family="'JetBrains Mono', 'Fira Code', 'Courier New', Courier, monospace"
+    font-size="420" font-weight="700"
+    fill="#00FF88"
+    text-anchor="middle" dominant-baseline="middle"
+    letter-spacing="-16"
+  >&gt;_</text>
+</svg>

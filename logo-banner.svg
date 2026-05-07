@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 500" width="1500" height="500">
+  <!-- Banner ample — YouTube, LinkedIn, Twitter/X header -->
+  <rect width="1500" height="500" fill="#0a0a0a"/>
+
+  <!-- Corner brackets -->
+  <path d="M28,28 L28,72 M28,28 L72,28" stroke="#00FF88" stroke-width="2.5" fill="none" stroke-linecap="square"/>
+  <path d="M1472,28 L1472,72 M1472,28 L1428,28" stroke="#00FF88" stroke-width="2.5" fill="none" stroke-linecap="square"/>
+  <path d="M28,472 L28,428 M28,472 L72,472" stroke="#00FF88" stroke-width="2.5" fill="none" stroke-linecap="square"/>
+  <path d="M1472,472 L1472,428 M1472,472 L1428,472" stroke="#00FF88" stroke-width="2.5" fill="none" stroke-linecap="square"/>
+
+  <!-- Logo centrat verticalment i horitzontal -->
+  <text
+    x="750" y="208"
+    font-family="'JetBrains Mono', 'Fira Code', 'Courier New', Courier, monospace"
+    font-size="152" font-weight="700"
+    fill="#00FF88"
+    text-anchor="middle" dominant-baseline="middle"
+  >TheEnglish</text>
+  <text
+    x="750" y="322"
+    font-family="'JetBrains Mono', 'Fira Code', 'Courier New', Courier, monospace"
+    font-size="152" font-weight="700"
+    fill="#E5E5E5"
+    text-anchor="middle" dominant-baseline="middle"
+  >Hacker</text>
+
+  <!-- Tagline sota -->
+  <text
+    x="750" y="430"
+    font-family="'JetBrains Mono', 'Fira Code', 'Courier New', Courier, monospace"
+    font-size="22"
+    fill="#00FF88" opacity="0.35"
+    text-anchor="middle"
+    letter-spacing="4"
+  >B2 FIRST · C1 ADVANCED · theenglishhacker.com</text>
+</svg>
